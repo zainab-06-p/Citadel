@@ -1,0 +1,2474 @@
+{
+  "version": 3,
+  "sources": [
+    "../../workproof/contract.py"
+  ],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAmBQ;;AAAkB;;AAAlB;AACA;;AAAkB;;AAAlB;AACA;AAAc;;AAAd;AAEA;AAAwB;AAAxB;AACA;;AAAsB;;AAAtB;AAEA;AAAsB;AAAtB;AACA;;AAAqB;AAArB;AACA;AAA2B;AAA3B;AACA;;AAA0B;AAA1B;AAzBR;;AAAA;;;AAAA;;;;;;;;;;;;;;;;;AAAA;;;AAAA;;;;;;;;AAAA;;AA2GK;;AAAA;AAAA;AAAA;;AAAA;AAAA;;;AAAA;AAAA;;AAAA;AAAA;AAAA;AAAA;;AA7CA;;AAAA;AAAA;AAAA;;AAAA;AA9DL;;;AAAA;;;AAAA;;;AAAA;;;AA8DK;;;AAAA;AAAA;;AAAA;AAAA;AAAA;AAAA;;AAnCA;;AAAA;AAAA;AAAA;;AAAA;AA3BL;;;AAAA;AAAA;;AAAA;;;AAAA;AAAA;;AAAA;;;AAAA;AAAA;;AAAA;;;AAAA;AAAA;;;AAAA;;;AAAA;;AAAA;AAAA;AAAA;AAAA;;AAAA;AAAA;AAAA;AA2BK;;;AAAA;AAAA;;AAAA;AAAA;AAAA;AAAA;;AA3BL;;AAAA;;;;;;;;;AA2BA;;;AAee;;AAAA;;AAAA;AAAP;AACO;;AAAA;;AAAA;;AAAA;AAAP;AACO;;AAAA;;AAAoB;;AAApB;AAAP;AACO;;AAAA;;AAAA;;AAAA;AAAP;AACA;;AAAA;AACW;AAAA;;AAAA;AAAA;AAAJ;AAAP;AAEA;;AAAA;;AAAA;AACA;;AAAA;;AAAA;AACA;AAAA;;AAAA;AAEA;AAAA;;AAAA;AACA;;AAAA;;AAAA;AAEA;AAAsB;AAAtB;AACA;;AAAqB;AAArB;AACA;AAA2B;AAA3B;AAEO;AAAA;AAAA;AAAA;AAAP;AAER;;;AAWe;AAAA;;AAAA;AAAA;AAAP;AACW;AAAA;AAAA;AAAA;AAAJ;AAAP;AACO;;AAAc;AAAA;;AAAA;AAAA;AAAd;AAAP;AAKsB;AAMP;AAAA;;AAAA;AAAA;AAGH;;AACA;;;;;;;;;;;;;;;;;;;;AALE;;;;;;AADK;;;AADN;;;AADH;;;AADO;;;AADK;;;;AAAA;;;AAAA;;;AAkBtB;AAAsB;AAAA;AAAA;AAAA;AAAoB;AAAA;AAAA;AAAA;;;;;AAA1C;;;AAAqE;;;AAArE;AAGA;AAAsB;AAAtB;AACA;AAAA;AAAA;AACA;;AAA0B;AAA1B;AAEO;AAAA;AAAA;AAAA;AAAP;AASO;AAAA;AAAA;AAAA;AAAP;AACW;AAAA;;AAAA;AAAA;AAAJ;AAAP;AACO;AAAA;AAAA;AAAA;AAAP;AACO;;AAAc;AAAA;AAAA;AAAA;AAAd;AAAP;AAEA;AACe;AAAA;AAAA;AAAA;AAEE;;AACE;AAAA;AAAA;AAAA;;;;;AAFF;;;;;AAFjB;;;;AAAA;;;AAAA;AAOA;;AAA0B;AAA1B;AACO;AAAA;AAAA;AAAA;AAAP",
+  "op_pc_offset": 0,
+  "pc_events": {
+    "1": {
+      "subroutine": "smart_contracts.workproof.contract.WorkProof.__algopy_entrypoint_with_init",
+      "params": {},
+      "block": "main",
+      "stack_in": [],
+      "op": "intcblock 0 1"
+    },
+    "5": {
+      "op": "bytecblock \"credential_asset_id\" \"worker\" \"milestone_paid\" \"milestone_amount\" \"escrow_funded\" \"credential_claimed\" \"supervisor\" \"milestone_name\" 0x151f7c75 \"contractor\""
+    },
+    "141": {
+      "op": "txn ApplicationID",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "143": {
+      "op": "bnz main_after_if_else@2",
+      "stack_out": []
+    },
+    "146": {
+      "op": "bytec 9 // \"contractor\"",
+      "defined_out": [
+        "\"contractor\""
+      ],
+      "stack_out": [
+        "\"contractor\""
+      ]
+    },
+    "148": {
+      "op": "global ZeroAddress",
+      "defined_out": [
+        "\"contractor\"",
+        "new_state_value%0#0"
+      ],
+      "stack_out": [
+        "\"contractor\"",
+        "new_state_value%0#0"
+      ]
+    },
+    "150": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "151": {
+      "op": "bytec 6 // \"supervisor\"",
+      "defined_out": [
+        "\"supervisor\""
+      ],
+      "stack_out": [
+        "\"supervisor\""
+      ]
+    },
+    "153": {
+      "op": "global ZeroAddress",
+      "defined_out": [
+        "\"supervisor\"",
+        "new_state_value%1#0"
+      ],
+      "stack_out": [
+        "\"supervisor\"",
+        "new_state_value%1#0"
+      ]
+    },
+    "155": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "156": {
+      "op": "bytec_1 // \"worker\"",
+      "defined_out": [
+        "\"worker\""
+      ],
+      "stack_out": [
+        "\"worker\""
+      ]
+    },
+    "157": {
+      "op": "global ZeroAddress",
+      "defined_out": [
+        "\"worker\"",
+        "new_state_value%2#0"
+      ],
+      "stack_out": [
+        "\"worker\"",
+        "new_state_value%2#0"
+      ]
+    },
+    "159": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "160": {
+      "op": "bytec_3 // \"milestone_amount\"",
+      "defined_out": [
+        "\"milestone_amount\""
+      ],
+      "stack_out": [
+        "\"milestone_amount\""
+      ]
+    },
+    "161": {
+      "op": "intc_0 // 0",
+      "defined_out": [
+        "\"milestone_amount\"",
+        "0"
+      ],
+      "stack_out": [
+        "\"milestone_amount\"",
+        "0"
+      ]
+    },
+    "162": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "163": {
+      "op": "bytec 7 // \"milestone_name\"",
+      "defined_out": [
+        "\"milestone_name\""
+      ],
+      "stack_out": [
+        "\"milestone_name\""
+      ]
+    },
+    "165": {
+      "op": "pushbytes 0x",
+      "defined_out": [
+        "\"milestone_name\"",
+        "0x"
+      ],
+      "stack_out": [
+        "\"milestone_name\"",
+        "0x"
+      ]
+    },
+    "167": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "168": {
+      "op": "bytec_2 // \"milestone_paid\"",
+      "defined_out": [
+        "\"milestone_paid\""
+      ],
+      "stack_out": [
+        "\"milestone_paid\""
+      ]
+    },
+    "169": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "\"milestone_paid\"",
+        "0"
+      ]
+    },
+    "170": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "171": {
+      "op": "bytec 4 // \"escrow_funded\"",
+      "defined_out": [
+        "\"escrow_funded\""
+      ],
+      "stack_out": [
+        "\"escrow_funded\""
+      ]
+    },
+    "173": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "\"escrow_funded\"",
+        "0"
+      ]
+    },
+    "174": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "175": {
+      "op": "bytec_0 // \"credential_asset_id\"",
+      "defined_out": [
+        "\"credential_asset_id\""
+      ],
+      "stack_out": [
+        "\"credential_asset_id\""
+      ]
+    },
+    "176": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "\"credential_asset_id\"",
+        "0"
+      ]
+    },
+    "177": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "178": {
+      "op": "bytec 5 // \"credential_claimed\"",
+      "defined_out": [
+        "\"credential_claimed\""
+      ],
+      "stack_out": [
+        "\"credential_claimed\""
+      ]
+    },
+    "180": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "\"credential_claimed\"",
+        "0"
+      ]
+    },
+    "181": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "182": {
+      "block": "main_after_if_else@2",
+      "stack_in": [],
+      "op": "txn NumAppArgs",
+      "defined_out": [
+        "tmp%0#2"
+      ],
+      "stack_out": [
+        "tmp%0#2"
+      ]
+    },
+    "184": {
+      "op": "bz main_bare_routing@8",
+      "stack_out": []
+    },
+    "187": {
+      "op": "pushbytess 0x39ac9d1c 0xb6854c85 0xb7588f1d // method \"create_work_contract(account,account,account,uint64,byte[],pay)uint64\", method \"approve_milestone(byte[],byte[])uint64\", method \"claim_credential()uint64\"",
+      "defined_out": [
+        "Method(approve_milestone(byte[],byte[])uint64)",
+        "Method(claim_credential()uint64)",
+        "Method(create_work_contract(account,account,account,uint64,byte[],pay)uint64)"
+      ],
+      "stack_out": [
+        "Method(create_work_contract(account,account,account,uint64,byte[],pay)uint64)",
+        "Method(approve_milestone(byte[],byte[])uint64)",
+        "Method(claim_credential()uint64)"
+      ]
+    },
+    "204": {
+      "op": "txna ApplicationArgs 0",
+      "defined_out": [
+        "Method(approve_milestone(byte[],byte[])uint64)",
+        "Method(claim_credential()uint64)",
+        "Method(create_work_contract(account,account,account,uint64,byte[],pay)uint64)",
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "Method(create_work_contract(account,account,account,uint64,byte[],pay)uint64)",
+        "Method(approve_milestone(byte[],byte[])uint64)",
+        "Method(claim_credential()uint64)",
+        "tmp%2#0"
+      ]
+    },
+    "207": {
+      "op": "match main_create_work_contract_route@5 main_approve_milestone_route@6 main_claim_credential_route@7",
+      "stack_out": []
+    },
+    "215": {
+      "block": "main_after_if_else@10",
+      "stack_in": [],
+      "op": "intc_0 // 0",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "216": {
+      "op": "return",
+      "stack_out": []
+    },
+    "217": {
+      "block": "main_claim_credential_route@7",
+      "stack_in": [],
+      "op": "txn OnCompletion",
+      "defined_out": [
+        "tmp%27#0"
+      ],
+      "stack_out": [
+        "tmp%27#0"
+      ]
+    },
+    "219": {
+      "op": "!",
+      "defined_out": [
+        "tmp%28#0"
+      ],
+      "stack_out": [
+        "tmp%28#0"
+      ]
+    },
+    "220": {
+      "error": "OnCompletion is not NoOp",
+      "op": "assert // OnCompletion is not NoOp",
+      "stack_out": []
+    },
+    "221": {
+      "op": "txn ApplicationID",
+      "defined_out": [
+        "tmp%29#0"
+      ],
+      "stack_out": [
+        "tmp%29#0"
+      ]
+    },
+    "223": {
+      "error": "can only call when not creating",
+      "op": "assert // can only call when not creating",
+      "stack_out": []
+    },
+    "224": {
+      "callsub": "smart_contracts.workproof.contract.WorkProof.claim_credential",
+      "op": "callsub claim_credential",
+      "defined_out": [
+        "to_encode%2#0"
+      ],
+      "stack_out": [
+        "to_encode%2#0"
+      ]
+    },
+    "227": {
+      "op": "itob",
+      "defined_out": [
+        "val_as_bytes%2#0"
+      ],
+      "stack_out": [
+        "val_as_bytes%2#0"
+      ]
+    },
+    "228": {
+      "op": "bytec 8 // 0x151f7c75",
+      "defined_out": [
+        "0x151f7c75",
+        "val_as_bytes%2#0"
+      ],
+      "stack_out": [
+        "val_as_bytes%2#0",
+        "0x151f7c75"
+      ]
+    },
+    "230": {
+      "op": "swap",
+      "stack_out": [
+        "0x151f7c75",
+        "val_as_bytes%2#0"
+      ]
+    },
+    "231": {
+      "op": "concat",
+      "defined_out": [
+        "tmp%31#0"
+      ],
+      "stack_out": [
+        "tmp%31#0"
+      ]
+    },
+    "232": {
+      "op": "log",
+      "stack_out": []
+    },
+    "233": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "234": {
+      "op": "return",
+      "stack_out": []
+    },
+    "235": {
+      "block": "main_approve_milestone_route@6",
+      "stack_in": [],
+      "op": "txn OnCompletion",
+      "defined_out": [
+        "tmp%18#0"
+      ],
+      "stack_out": [
+        "tmp%18#0"
+      ]
+    },
+    "237": {
+      "op": "!",
+      "defined_out": [
+        "tmp%19#0"
+      ],
+      "stack_out": [
+        "tmp%19#0"
+      ]
+    },
+    "238": {
+      "error": "OnCompletion is not NoOp",
+      "op": "assert // OnCompletion is not NoOp",
+      "stack_out": []
+    },
+    "239": {
+      "op": "txn ApplicationID",
+      "defined_out": [
+        "tmp%20#0"
+      ],
+      "stack_out": [
+        "tmp%20#0"
+      ]
+    },
+    "241": {
+      "error": "can only call when not creating",
+      "op": "assert // can only call when not creating",
+      "stack_out": []
+    },
+    "242": {
+      "op": "txna ApplicationArgs 1",
+      "defined_out": [
+        "tmp%22#0"
+      ],
+      "stack_out": [
+        "tmp%22#0"
+      ]
+    },
+    "245": {
+      "op": "extract 2 0",
+      "defined_out": [
+        "tmp%23#0"
+      ],
+      "stack_out": [
+        "tmp%23#0"
+      ]
+    },
+    "248": {
+      "op": "txna ApplicationArgs 2",
+      "defined_out": [
+        "tmp%23#0",
+        "tmp%24#0"
+      ],
+      "stack_out": [
+        "tmp%23#0",
+        "tmp%24#0"
+      ]
+    },
+    "251": {
+      "op": "extract 2 0",
+      "defined_out": [
+        "tmp%23#0",
+        "tmp%25#0"
+      ],
+      "stack_out": [
+        "tmp%23#0",
+        "tmp%25#0"
+      ]
+    },
+    "254": {
+      "callsub": "smart_contracts.workproof.contract.WorkProof.approve_milestone",
+      "op": "callsub approve_milestone",
+      "defined_out": [
+        "to_encode%1#0"
+      ],
+      "stack_out": [
+        "to_encode%1#0"
+      ]
+    },
+    "257": {
+      "op": "itob",
+      "defined_out": [
+        "val_as_bytes%1#0"
+      ],
+      "stack_out": [
+        "val_as_bytes%1#0"
+      ]
+    },
+    "258": {
+      "op": "bytec 8 // 0x151f7c75",
+      "defined_out": [
+        "0x151f7c75",
+        "val_as_bytes%1#0"
+      ],
+      "stack_out": [
+        "val_as_bytes%1#0",
+        "0x151f7c75"
+      ]
+    },
+    "260": {
+      "op": "swap",
+      "stack_out": [
+        "0x151f7c75",
+        "val_as_bytes%1#0"
+      ]
+    },
+    "261": {
+      "op": "concat",
+      "defined_out": [
+        "tmp%26#0"
+      ],
+      "stack_out": [
+        "tmp%26#0"
+      ]
+    },
+    "262": {
+      "op": "log",
+      "stack_out": []
+    },
+    "263": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "264": {
+      "op": "return",
+      "stack_out": []
+    },
+    "265": {
+      "block": "main_create_work_contract_route@5",
+      "stack_in": [],
+      "op": "txn OnCompletion",
+      "defined_out": [
+        "tmp%3#0"
+      ],
+      "stack_out": [
+        "tmp%3#0"
+      ]
+    },
+    "267": {
+      "op": "!",
+      "defined_out": [
+        "tmp%4#0"
+      ],
+      "stack_out": [
+        "tmp%4#0"
+      ]
+    },
+    "268": {
+      "error": "OnCompletion is not NoOp",
+      "op": "assert // OnCompletion is not NoOp",
+      "stack_out": []
+    },
+    "269": {
+      "op": "txn ApplicationID",
+      "defined_out": [
+        "tmp%5#0"
+      ],
+      "stack_out": [
+        "tmp%5#0"
+      ]
+    },
+    "271": {
+      "error": "can only call when not creating",
+      "op": "assert // can only call when not creating",
+      "stack_out": []
+    },
+    "272": {
+      "op": "txna ApplicationArgs 1",
+      "defined_out": [
+        "reinterpret_bytes[1]%0#0"
+      ],
+      "stack_out": [
+        "reinterpret_bytes[1]%0#0"
+      ]
+    },
+    "275": {
+      "op": "btoi",
+      "defined_out": [
+        "tmp%7#0"
+      ],
+      "stack_out": [
+        "tmp%7#0"
+      ]
+    },
+    "276": {
+      "op": "txnas Accounts",
+      "defined_out": [
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0"
+      ]
+    },
+    "278": {
+      "op": "txna ApplicationArgs 2",
+      "defined_out": [
+        "reinterpret_bytes[1]%1#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "reinterpret_bytes[1]%1#0"
+      ]
+    },
+    "281": {
+      "op": "btoi",
+      "defined_out": [
+        "tmp%8#0",
+        "tmp%9#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%9#0"
+      ]
+    },
+    "282": {
+      "op": "txnas Accounts",
+      "defined_out": [
+        "tmp%10#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0"
+      ]
+    },
+    "284": {
+      "op": "txna ApplicationArgs 3",
+      "defined_out": [
+        "reinterpret_bytes[1]%2#0",
+        "tmp%10#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "reinterpret_bytes[1]%2#0"
+      ]
+    },
+    "287": {
+      "op": "btoi",
+      "defined_out": [
+        "tmp%10#0",
+        "tmp%11#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%11#0"
+      ]
+    },
+    "288": {
+      "op": "txnas Accounts",
+      "defined_out": [
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%12#0"
+      ]
+    },
+    "290": {
+      "op": "txna ApplicationArgs 4",
+      "defined_out": [
+        "reinterpret_bytes[8]%0#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "reinterpret_bytes[8]%0#0"
+      ]
+    },
+    "293": {
+      "op": "btoi",
+      "defined_out": [
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0"
+      ]
+    },
+    "294": {
+      "op": "txna ApplicationArgs 5",
+      "defined_out": [
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%14#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%14#0"
+      ]
+    },
+    "297": {
+      "op": "extract 2 0",
+      "defined_out": [
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0"
+      ]
+    },
+    "300": {
+      "op": "txn GroupIndex",
+      "defined_out": [
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "tmp%16#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "tmp%16#0"
+      ]
+    },
+    "302": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "1",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "tmp%16#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "tmp%16#0",
+        "1"
+      ]
+    },
+    "303": {
+      "op": "-",
+      "defined_out": [
+        "gtxn_idx%0#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "gtxn_idx%0#0"
+      ]
+    },
+    "304": {
+      "op": "dup",
+      "defined_out": [
+        "gtxn_idx%0#0",
+        "gtxn_idx%0#0 (copy)",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "gtxn_idx%0#0",
+        "gtxn_idx%0#0 (copy)"
+      ]
+    },
+    "305": {
+      "op": "gtxns TypeEnum",
+      "defined_out": [
+        "gtxn_idx%0#0",
+        "gtxn_type%0#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "gtxn_idx%0#0",
+        "gtxn_type%0#0"
+      ]
+    },
+    "307": {
+      "op": "intc_1 // pay",
+      "defined_out": [
+        "gtxn_idx%0#0",
+        "gtxn_type%0#0",
+        "pay",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "gtxn_idx%0#0",
+        "gtxn_type%0#0",
+        "pay"
+      ]
+    },
+    "308": {
+      "op": "==",
+      "defined_out": [
+        "gtxn_idx%0#0",
+        "gtxn_type_matches%0#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "gtxn_idx%0#0",
+        "gtxn_type_matches%0#0"
+      ]
+    },
+    "309": {
+      "error": "transaction type is pay",
+      "op": "assert // transaction type is pay",
+      "stack_out": [
+        "tmp%8#0",
+        "tmp%10#0",
+        "tmp%12#0",
+        "tmp%13#0",
+        "tmp%15#0",
+        "gtxn_idx%0#0"
+      ]
+    },
+    "310": {
+      "callsub": "smart_contracts.workproof.contract.WorkProof.create_work_contract",
+      "op": "callsub create_work_contract",
+      "defined_out": [
+        "to_encode%0#0"
+      ],
+      "stack_out": [
+        "to_encode%0#0"
+      ]
+    },
+    "313": {
+      "op": "itob",
+      "defined_out": [
+        "val_as_bytes%0#0"
+      ],
+      "stack_out": [
+        "val_as_bytes%0#0"
+      ]
+    },
+    "314": {
+      "op": "bytec 8 // 0x151f7c75",
+      "defined_out": [
+        "0x151f7c75",
+        "val_as_bytes%0#0"
+      ],
+      "stack_out": [
+        "val_as_bytes%0#0",
+        "0x151f7c75"
+      ]
+    },
+    "316": {
+      "op": "swap",
+      "stack_out": [
+        "0x151f7c75",
+        "val_as_bytes%0#0"
+      ]
+    },
+    "317": {
+      "op": "concat",
+      "defined_out": [
+        "tmp%17#0"
+      ],
+      "stack_out": [
+        "tmp%17#0"
+      ]
+    },
+    "318": {
+      "op": "log",
+      "stack_out": []
+    },
+    "319": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "320": {
+      "op": "return",
+      "stack_out": []
+    },
+    "321": {
+      "block": "main_bare_routing@8",
+      "stack_in": [],
+      "op": "txn OnCompletion",
+      "defined_out": [
+        "tmp%32#0"
+      ],
+      "stack_out": [
+        "tmp%32#0"
+      ]
+    },
+    "323": {
+      "op": "bnz main_after_if_else@10",
+      "stack_out": []
+    },
+    "326": {
+      "op": "txn ApplicationID",
+      "defined_out": [
+        "tmp%33#0"
+      ],
+      "stack_out": [
+        "tmp%33#0"
+      ]
+    },
+    "328": {
+      "op": "!",
+      "defined_out": [
+        "tmp%34#0"
+      ],
+      "stack_out": [
+        "tmp%34#0"
+      ]
+    },
+    "329": {
+      "error": "can only call when creating",
+      "op": "assert // can only call when creating",
+      "stack_out": []
+    },
+    "330": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "331": {
+      "op": "return",
+      "stack_out": []
+    },
+    "332": {
+      "subroutine": "smart_contracts.workproof.contract.WorkProof.create_work_contract",
+      "params": {
+        "contractor#0": "bytes",
+        "supervisor#0": "bytes",
+        "worker#0": "bytes",
+        "milestone_amount#0": "uint64",
+        "milestone_name#0": "bytes",
+        "pay_txn#0": "uint64"
+      },
+      "block": "create_work_contract",
+      "stack_in": [],
+      "op": "proto 6 1"
+    },
+    "335": {
+      "op": "txn Sender",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "337": {
+      "op": "frame_dig -6",
+      "defined_out": [
+        "contractor#0 (copy)",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "contractor#0 (copy)"
+      ]
+    },
+    "339": {
+      "op": "==",
+      "defined_out": [
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0"
+      ]
+    },
+    "340": {
+      "error": "Sender must be contractor",
+      "op": "assert // Sender must be contractor",
+      "stack_out": []
+    },
+    "341": {
+      "op": "frame_dig -1",
+      "defined_out": [
+        "pay_txn#0 (copy)"
+      ],
+      "stack_out": [
+        "pay_txn#0 (copy)"
+      ]
+    },
+    "343": {
+      "op": "gtxns Sender",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "345": {
+      "op": "frame_dig -6",
+      "stack_out": [
+        "tmp%2#0",
+        "contractor#0 (copy)"
+      ]
+    },
+    "347": {
+      "op": "==",
+      "defined_out": [
+        "tmp%3#0"
+      ],
+      "stack_out": [
+        "tmp%3#0"
+      ]
+    },
+    "348": {
+      "error": "Escrow sender mismatch",
+      "op": "assert // Escrow sender mismatch",
+      "stack_out": []
+    },
+    "349": {
+      "op": "frame_dig -1",
+      "stack_out": [
+        "pay_txn#0 (copy)"
+      ]
+    },
+    "351": {
+      "op": "gtxns Receiver",
+      "defined_out": [
+        "tmp%4#0"
+      ],
+      "stack_out": [
+        "tmp%4#0"
+      ]
+    },
+    "353": {
+      "op": "global CurrentApplicationAddress",
+      "defined_out": [
+        "tmp%4#0",
+        "tmp%5#0"
+      ],
+      "stack_out": [
+        "tmp%4#0",
+        "tmp%5#0"
+      ]
+    },
+    "355": {
+      "op": "==",
+      "defined_out": [
+        "tmp%6#0"
+      ],
+      "stack_out": [
+        "tmp%6#0"
+      ]
+    },
+    "356": {
+      "error": "Escrow receiver must be the contract",
+      "op": "assert // Escrow receiver must be the contract",
+      "stack_out": []
+    },
+    "357": {
+      "op": "frame_dig -1",
+      "stack_out": [
+        "pay_txn#0 (copy)"
+      ]
+    },
+    "359": {
+      "op": "gtxns Amount",
+      "defined_out": [
+        "tmp%7#0"
+      ],
+      "stack_out": [
+        "tmp%7#0"
+      ]
+    },
+    "361": {
+      "op": "frame_dig -3",
+      "defined_out": [
+        "milestone_amount#0 (copy)",
+        "tmp%7#0"
+      ],
+      "stack_out": [
+        "tmp%7#0",
+        "milestone_amount#0 (copy)"
+      ]
+    },
+    "363": {
+      "op": "==",
+      "defined_out": [
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%8#0"
+      ]
+    },
+    "364": {
+      "error": "Escrow amount must equal milestone amount",
+      "op": "assert // Escrow amount must equal milestone amount",
+      "stack_out": []
+    },
+    "365": {
+      "op": "frame_dig -3",
+      "stack_out": [
+        "milestone_amount#0 (copy)"
+      ]
+    },
+    "367": {
+      "error": "Milestone amount must be > 0",
+      "op": "assert // Milestone amount must be > 0",
+      "stack_out": []
+    },
+    "368": {
+      "op": "intc_0 // 0",
+      "defined_out": [
+        "0"
+      ],
+      "stack_out": [
+        "0"
+      ]
+    },
+    "369": {
+      "op": "bytec 4 // \"escrow_funded\"",
+      "defined_out": [
+        "\"escrow_funded\"",
+        "0"
+      ],
+      "stack_out": [
+        "0",
+        "\"escrow_funded\""
+      ]
+    },
+    "371": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0"
+      ],
+      "stack_out": [
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "372": {
+      "error": "check self.escrow_funded exists",
+      "op": "assert // check self.escrow_funded exists",
+      "stack_out": [
+        "maybe_value%0#0"
+      ]
+    },
+    "373": {
+      "op": "!",
+      "defined_out": [
+        "tmp%10#0"
+      ],
+      "stack_out": [
+        "tmp%10#0"
+      ]
+    },
+    "374": {
+      "error": "Escrow already funded",
+      "op": "assert // Escrow already funded",
+      "stack_out": []
+    },
+    "375": {
+      "op": "bytec 9 // \"contractor\"",
+      "defined_out": [
+        "\"contractor\""
+      ],
+      "stack_out": [
+        "\"contractor\""
+      ]
+    },
+    "377": {
+      "op": "frame_dig -6",
+      "stack_out": [
+        "\"contractor\"",
+        "contractor#0 (copy)"
+      ]
+    },
+    "379": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "380": {
+      "op": "bytec 6 // \"supervisor\"",
+      "defined_out": [
+        "\"supervisor\""
+      ],
+      "stack_out": [
+        "\"supervisor\""
+      ]
+    },
+    "382": {
+      "op": "frame_dig -5",
+      "defined_out": [
+        "\"supervisor\"",
+        "supervisor#0 (copy)"
+      ],
+      "stack_out": [
+        "\"supervisor\"",
+        "supervisor#0 (copy)"
+      ]
+    },
+    "384": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "385": {
+      "op": "bytec_1 // \"worker\"",
+      "defined_out": [
+        "\"worker\""
+      ],
+      "stack_out": [
+        "\"worker\""
+      ]
+    },
+    "386": {
+      "op": "frame_dig -4",
+      "defined_out": [
+        "\"worker\"",
+        "worker#0 (copy)"
+      ],
+      "stack_out": [
+        "\"worker\"",
+        "worker#0 (copy)"
+      ]
+    },
+    "388": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "389": {
+      "op": "bytec_3 // \"milestone_amount\"",
+      "defined_out": [
+        "\"milestone_amount\""
+      ],
+      "stack_out": [
+        "\"milestone_amount\""
+      ]
+    },
+    "390": {
+      "op": "frame_dig -3",
+      "stack_out": [
+        "\"milestone_amount\"",
+        "milestone_amount#0 (copy)"
+      ]
+    },
+    "392": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "393": {
+      "op": "bytec 7 // \"milestone_name\"",
+      "defined_out": [
+        "\"milestone_name\""
+      ],
+      "stack_out": [
+        "\"milestone_name\""
+      ]
+    },
+    "395": {
+      "op": "frame_dig -2",
+      "defined_out": [
+        "\"milestone_name\"",
+        "milestone_name#0 (copy)"
+      ],
+      "stack_out": [
+        "\"milestone_name\"",
+        "milestone_name#0 (copy)"
+      ]
+    },
+    "397": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "398": {
+      "op": "bytec_2 // \"milestone_paid\"",
+      "defined_out": [
+        "\"milestone_paid\""
+      ],
+      "stack_out": [
+        "\"milestone_paid\""
+      ]
+    },
+    "399": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "\"milestone_paid\"",
+        "0"
+      ]
+    },
+    "400": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "401": {
+      "op": "bytec 4 // \"escrow_funded\"",
+      "stack_out": [
+        "\"escrow_funded\""
+      ]
+    },
+    "403": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "\"escrow_funded\"",
+        "1"
+      ],
+      "stack_out": [
+        "\"escrow_funded\"",
+        "1"
+      ]
+    },
+    "404": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "405": {
+      "op": "bytec_0 // \"credential_asset_id\"",
+      "defined_out": [
+        "\"credential_asset_id\""
+      ],
+      "stack_out": [
+        "\"credential_asset_id\""
+      ]
+    },
+    "406": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "\"credential_asset_id\"",
+        "0"
+      ]
+    },
+    "407": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "408": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "409": {
+      "op": "bytec_3 // \"milestone_amount\"",
+      "stack_out": [
+        "0",
+        "\"milestone_amount\""
+      ]
+    },
+    "410": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%1#0",
+        "maybe_value%1#0"
+      ],
+      "stack_out": [
+        "maybe_value%1#0",
+        "maybe_exists%1#0"
+      ]
+    },
+    "411": {
+      "error": "check self.milestone_amount exists",
+      "op": "assert // check self.milestone_amount exists",
+      "stack_out": [
+        "maybe_value%1#0"
+      ]
+    },
+    "412": {
+      "retsub": true,
+      "op": "retsub"
+    },
+    "413": {
+      "subroutine": "smart_contracts.workproof.contract.WorkProof.approve_milestone",
+      "params": {
+        "metadata_url#0": "bytes",
+        "metadata_hash#0": "bytes"
+      },
+      "block": "approve_milestone",
+      "stack_in": [],
+      "op": "proto 2 1"
+    },
+    "416": {
+      "op": "intc_0 // 0",
+      "defined_out": [
+        "0"
+      ],
+      "stack_out": [
+        "0"
+      ]
+    },
+    "417": {
+      "op": "bytec 4 // \"escrow_funded\"",
+      "defined_out": [
+        "\"escrow_funded\"",
+        "0"
+      ],
+      "stack_out": [
+        "0",
+        "\"escrow_funded\""
+      ]
+    },
+    "419": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0"
+      ],
+      "stack_out": [
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "420": {
+      "error": "check self.escrow_funded exists",
+      "op": "assert // check self.escrow_funded exists",
+      "stack_out": [
+        "maybe_value%0#0"
+      ]
+    },
+    "421": {
+      "error": "Escrow not funded",
+      "op": "assert // Escrow not funded",
+      "stack_out": []
+    },
+    "422": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "423": {
+      "op": "bytec_2 // \"milestone_paid\"",
+      "defined_out": [
+        "\"milestone_paid\"",
+        "0"
+      ],
+      "stack_out": [
+        "0",
+        "\"milestone_paid\""
+      ]
+    },
+    "424": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%1#0",
+        "maybe_value%1#0"
+      ],
+      "stack_out": [
+        "maybe_value%1#0",
+        "maybe_exists%1#0"
+      ]
+    },
+    "425": {
+      "error": "check self.milestone_paid exists",
+      "op": "assert // check self.milestone_paid exists",
+      "stack_out": [
+        "maybe_value%1#0"
+      ]
+    },
+    "426": {
+      "op": "!",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "427": {
+      "error": "Milestone already paid",
+      "op": "assert // Milestone already paid",
+      "stack_out": []
+    },
+    "428": {
+      "op": "txn Sender",
+      "defined_out": [
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0"
+      ]
+    },
+    "430": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "tmp%1#0",
+        "0"
+      ]
+    },
+    "431": {
+      "op": "bytec 6 // \"supervisor\"",
+      "defined_out": [
+        "\"supervisor\"",
+        "0",
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0",
+        "0",
+        "\"supervisor\""
+      ]
+    },
+    "433": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%2#0",
+        "maybe_value%2#0",
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0",
+        "maybe_value%2#0",
+        "maybe_exists%2#0"
+      ]
+    },
+    "434": {
+      "error": "check self.supervisor exists",
+      "op": "assert // check self.supervisor exists",
+      "stack_out": [
+        "tmp%1#0",
+        "maybe_value%2#0"
+      ]
+    },
+    "435": {
+      "op": "==",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "436": {
+      "error": "Sender must be supervisor",
+      "op": "assert // Sender must be supervisor",
+      "stack_out": []
+    },
+    "437": {
+      "op": "itxn_begin"
+    },
+    "438": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "439": {
+      "op": "bytec 7 // \"milestone_name\"",
+      "defined_out": [
+        "\"milestone_name\"",
+        "0"
+      ],
+      "stack_out": [
+        "0",
+        "\"milestone_name\""
+      ]
+    },
+    "441": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%3#0",
+        "maybe_value%3#0"
+      ],
+      "stack_out": [
+        "maybe_value%3#0",
+        "maybe_exists%3#0"
+      ]
+    },
+    "442": {
+      "error": "check self.milestone_name exists",
+      "op": "assert // check self.milestone_name exists",
+      "stack_out": [
+        "maybe_value%3#0"
+      ]
+    },
+    "443": {
+      "op": "global CurrentApplicationAddress",
+      "defined_out": [
+        "inner_txn_params%0%%param_ConfigAssetManager_idx_0#0",
+        "maybe_value%3#0"
+      ],
+      "stack_out": [
+        "maybe_value%3#0",
+        "inner_txn_params%0%%param_ConfigAssetManager_idx_0#0"
+      ]
+    },
+    "445": {
+      "op": "dupn 3",
+      "defined_out": [
+        "inner_txn_params%0%%param_ConfigAssetClawback_idx_0#0",
+        "inner_txn_params%0%%param_ConfigAssetFreeze_idx_0#0",
+        "inner_txn_params%0%%param_ConfigAssetManager_idx_0#0",
+        "inner_txn_params%0%%param_ConfigAssetReserve_idx_0#0",
+        "maybe_value%3#0"
+      ],
+      "stack_out": [
+        "maybe_value%3#0",
+        "inner_txn_params%0%%param_ConfigAssetManager_idx_0#0",
+        "inner_txn_params%0%%param_ConfigAssetReserve_idx_0#0",
+        "inner_txn_params%0%%param_ConfigAssetFreeze_idx_0#0",
+        "inner_txn_params%0%%param_ConfigAssetClawback_idx_0#0"
+      ]
+    },
+    "447": {
+      "op": "itxn_field ConfigAssetClawback",
+      "stack_out": [
+        "maybe_value%3#0",
+        "inner_txn_params%0%%param_ConfigAssetManager_idx_0#0",
+        "inner_txn_params%0%%param_ConfigAssetReserve_idx_0#0",
+        "inner_txn_params%0%%param_ConfigAssetFreeze_idx_0#0"
+      ]
+    },
+    "449": {
+      "op": "itxn_field ConfigAssetFreeze",
+      "stack_out": [
+        "maybe_value%3#0",
+        "inner_txn_params%0%%param_ConfigAssetManager_idx_0#0",
+        "inner_txn_params%0%%param_ConfigAssetReserve_idx_0#0"
+      ]
+    },
+    "451": {
+      "op": "itxn_field ConfigAssetReserve",
+      "stack_out": [
+        "maybe_value%3#0",
+        "inner_txn_params%0%%param_ConfigAssetManager_idx_0#0"
+      ]
+    },
+    "453": {
+      "op": "itxn_field ConfigAssetManager",
+      "stack_out": [
+        "maybe_value%3#0"
+      ]
+    },
+    "455": {
+      "op": "frame_dig -1",
+      "defined_out": [
+        "maybe_value%3#0",
+        "metadata_hash#0 (copy)"
+      ],
+      "stack_out": [
+        "maybe_value%3#0",
+        "metadata_hash#0 (copy)"
+      ]
+    },
+    "457": {
+      "op": "itxn_field ConfigAssetMetadataHash",
+      "stack_out": [
+        "maybe_value%3#0"
+      ]
+    },
+    "459": {
+      "op": "frame_dig -2",
+      "defined_out": [
+        "maybe_value%3#0",
+        "metadata_url#0 (copy)"
+      ],
+      "stack_out": [
+        "maybe_value%3#0",
+        "metadata_url#0 (copy)"
+      ]
+    },
+    "461": {
+      "op": "itxn_field ConfigAssetURL",
+      "stack_out": [
+        "maybe_value%3#0"
+      ]
+    },
+    "463": {
+      "op": "itxn_field ConfigAssetName",
+      "stack_out": []
+    },
+    "465": {
+      "op": "pushbytes 0x5750",
+      "defined_out": [
+        "0x5750"
+      ],
+      "stack_out": [
+        "0x5750"
+      ]
+    },
+    "469": {
+      "op": "itxn_field ConfigAssetUnitName",
+      "stack_out": []
+    },
+    "471": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "472": {
+      "op": "itxn_field ConfigAssetDefaultFrozen",
+      "stack_out": []
+    },
+    "474": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "475": {
+      "op": "itxn_field ConfigAssetDecimals",
+      "stack_out": []
+    },
+    "477": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "478": {
+      "op": "itxn_field ConfigAssetTotal",
+      "stack_out": []
+    },
+    "480": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "481": {
+      "op": "itxn_field ConfigAsset",
+      "stack_out": []
+    },
+    "483": {
+      "op": "pushint 3 // acfg",
+      "defined_out": [
+        "acfg"
+      ],
+      "stack_out": [
+        "acfg"
+      ]
+    },
+    "485": {
+      "op": "itxn_field TypeEnum",
+      "stack_out": []
+    },
+    "487": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "488": {
+      "op": "itxn_field Fee",
+      "stack_out": []
+    },
+    "490": {
+      "op": "itxn_submit"
+    },
+    "491": {
+      "op": "itxn CreatedAssetID",
+      "defined_out": [
+        "asset_config_result.CreatedAssetID#0"
+      ],
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0"
+      ]
+    },
+    "493": {
+      "op": "itxn_begin"
+    },
+    "494": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "0"
+      ]
+    },
+    "495": {
+      "op": "bytec_1 // \"worker\"",
+      "defined_out": [
+        "\"worker\"",
+        "0",
+        "asset_config_result.CreatedAssetID#0"
+      ],
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "0",
+        "\"worker\""
+      ]
+    },
+    "496": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "maybe_exists%4#0",
+        "maybe_value%4#0"
+      ],
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "maybe_value%4#0",
+        "maybe_exists%4#0"
+      ]
+    },
+    "497": {
+      "error": "check self.worker exists",
+      "op": "assert // check self.worker exists",
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "maybe_value%4#0"
+      ]
+    },
+    "498": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "maybe_value%4#0",
+        "0"
+      ]
+    },
+    "499": {
+      "op": "bytec_3 // \"milestone_amount\"",
+      "defined_out": [
+        "\"milestone_amount\"",
+        "0",
+        "asset_config_result.CreatedAssetID#0",
+        "maybe_value%4#0"
+      ],
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "maybe_value%4#0",
+        "0",
+        "\"milestone_amount\""
+      ]
+    },
+    "500": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "maybe_exists%5#0",
+        "maybe_value%4#0",
+        "maybe_value%5#0"
+      ],
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "maybe_value%4#0",
+        "maybe_value%5#0",
+        "maybe_exists%5#0"
+      ]
+    },
+    "501": {
+      "error": "check self.milestone_amount exists",
+      "op": "assert // check self.milestone_amount exists",
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "maybe_value%4#0",
+        "maybe_value%5#0"
+      ]
+    },
+    "502": {
+      "op": "itxn_field Amount",
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "maybe_value%4#0"
+      ]
+    },
+    "504": {
+      "op": "itxn_field Receiver",
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0"
+      ]
+    },
+    "506": {
+      "op": "intc_1 // pay",
+      "defined_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "pay"
+      ],
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "pay"
+      ]
+    },
+    "507": {
+      "op": "itxn_field TypeEnum",
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0"
+      ]
+    },
+    "509": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "0"
+      ]
+    },
+    "510": {
+      "op": "itxn_field Fee",
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0"
+      ]
+    },
+    "512": {
+      "op": "itxn_submit"
+    },
+    "513": {
+      "op": "bytec_2 // \"milestone_paid\"",
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "\"milestone_paid\""
+      ]
+    },
+    "514": {
+      "op": "intc_1 // 1",
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "\"milestone_paid\"",
+        "1"
+      ]
+    },
+    "515": {
+      "op": "app_global_put",
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0"
+      ]
+    },
+    "516": {
+      "op": "bytec_0 // \"credential_asset_id\"",
+      "defined_out": [
+        "\"credential_asset_id\"",
+        "asset_config_result.CreatedAssetID#0"
+      ],
+      "stack_out": [
+        "asset_config_result.CreatedAssetID#0",
+        "\"credential_asset_id\""
+      ]
+    },
+    "517": {
+      "op": "swap",
+      "stack_out": [
+        "\"credential_asset_id\"",
+        "asset_config_result.CreatedAssetID#0"
+      ]
+    },
+    "518": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "519": {
+      "op": "bytec 5 // \"credential_claimed\"",
+      "defined_out": [
+        "\"credential_claimed\""
+      ],
+      "stack_out": [
+        "\"credential_claimed\""
+      ]
+    },
+    "521": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "\"credential_claimed\"",
+        "0"
+      ]
+    },
+    "522": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "523": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "524": {
+      "op": "bytec_0 // \"credential_asset_id\"",
+      "stack_out": [
+        "0",
+        "\"credential_asset_id\""
+      ]
+    },
+    "525": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%6#0",
+        "maybe_value%6#0"
+      ],
+      "stack_out": [
+        "maybe_value%6#0",
+        "maybe_exists%6#0"
+      ]
+    },
+    "526": {
+      "error": "check self.credential_asset_id exists",
+      "op": "assert // check self.credential_asset_id exists",
+      "stack_out": [
+        "maybe_value%6#0"
+      ]
+    },
+    "527": {
+      "retsub": true,
+      "op": "retsub"
+    },
+    "528": {
+      "subroutine": "smart_contracts.workproof.contract.WorkProof.claim_credential",
+      "params": {},
+      "block": "claim_credential",
+      "stack_in": [],
+      "op": "intc_0 // 0",
+      "defined_out": [
+        "0"
+      ],
+      "stack_out": [
+        "0"
+      ]
+    },
+    "529": {
+      "op": "bytec_2 // \"milestone_paid\"",
+      "defined_out": [
+        "\"milestone_paid\"",
+        "0"
+      ],
+      "stack_out": [
+        "0",
+        "\"milestone_paid\""
+      ]
+    },
+    "530": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0"
+      ],
+      "stack_out": [
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "531": {
+      "error": "check self.milestone_paid exists",
+      "op": "assert // check self.milestone_paid exists",
+      "stack_out": [
+        "maybe_value%0#0"
+      ]
+    },
+    "532": {
+      "error": "Milestone not approved yet",
+      "op": "assert // Milestone not approved yet",
+      "stack_out": []
+    },
+    "533": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "534": {
+      "op": "bytec 5 // \"credential_claimed\"",
+      "defined_out": [
+        "\"credential_claimed\"",
+        "0"
+      ],
+      "stack_out": [
+        "0",
+        "\"credential_claimed\""
+      ]
+    },
+    "536": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%1#0",
+        "maybe_value%1#0"
+      ],
+      "stack_out": [
+        "maybe_value%1#0",
+        "maybe_exists%1#0"
+      ]
+    },
+    "537": {
+      "error": "check self.credential_claimed exists",
+      "op": "assert // check self.credential_claimed exists",
+      "stack_out": [
+        "maybe_value%1#0"
+      ]
+    },
+    "538": {
+      "op": "!",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "539": {
+      "error": "Credential already claimed",
+      "op": "assert // Credential already claimed",
+      "stack_out": []
+    },
+    "540": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "541": {
+      "op": "bytec_0 // \"credential_asset_id\"",
+      "defined_out": [
+        "\"credential_asset_id\"",
+        "0"
+      ],
+      "stack_out": [
+        "0",
+        "\"credential_asset_id\""
+      ]
+    },
+    "542": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%2#0",
+        "maybe_value%2#0"
+      ],
+      "stack_out": [
+        "maybe_value%2#0",
+        "maybe_exists%2#0"
+      ]
+    },
+    "543": {
+      "error": "check self.credential_asset_id exists",
+      "op": "assert // check self.credential_asset_id exists",
+      "stack_out": [
+        "maybe_value%2#0"
+      ]
+    },
+    "544": {
+      "error": "Missing credential asset id",
+      "op": "assert // Missing credential asset id",
+      "stack_out": []
+    },
+    "545": {
+      "op": "txn Sender",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "547": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "tmp%2#0",
+        "0"
+      ]
+    },
+    "548": {
+      "op": "bytec_1 // \"worker\"",
+      "defined_out": [
+        "\"worker\"",
+        "0",
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0",
+        "0",
+        "\"worker\""
+      ]
+    },
+    "549": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%3#0",
+        "maybe_value%3#0",
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0",
+        "maybe_value%3#0",
+        "maybe_exists%3#0"
+      ]
+    },
+    "550": {
+      "error": "check self.worker exists",
+      "op": "assert // check self.worker exists",
+      "stack_out": [
+        "tmp%2#0",
+        "maybe_value%3#0"
+      ]
+    },
+    "551": {
+      "op": "==",
+      "defined_out": [
+        "tmp%3#0"
+      ],
+      "stack_out": [
+        "tmp%3#0"
+      ]
+    },
+    "552": {
+      "error": "Sender must be worker",
+      "op": "assert // Sender must be worker",
+      "stack_out": []
+    },
+    "553": {
+      "op": "itxn_begin"
+    },
+    "554": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "555": {
+      "op": "bytec_0 // \"credential_asset_id\"",
+      "stack_out": [
+        "0",
+        "\"credential_asset_id\""
+      ]
+    },
+    "556": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%4#0",
+        "maybe_value%4#0"
+      ],
+      "stack_out": [
+        "maybe_value%4#0",
+        "maybe_exists%4#0"
+      ]
+    },
+    "557": {
+      "error": "check self.credential_asset_id exists",
+      "op": "assert // check self.credential_asset_id exists",
+      "stack_out": [
+        "maybe_value%4#0"
+      ]
+    },
+    "558": {
+      "op": "global CurrentApplicationAddress",
+      "defined_out": [
+        "inner_txn_params%0%%param_AssetSender_idx_0#0",
+        "maybe_value%4#0"
+      ],
+      "stack_out": [
+        "maybe_value%4#0",
+        "inner_txn_params%0%%param_AssetSender_idx_0#0"
+      ]
+    },
+    "560": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "maybe_value%4#0",
+        "inner_txn_params%0%%param_AssetSender_idx_0#0",
+        "0"
+      ]
+    },
+    "561": {
+      "op": "bytec_1 // \"worker\"",
+      "stack_out": [
+        "maybe_value%4#0",
+        "inner_txn_params%0%%param_AssetSender_idx_0#0",
+        "0",
+        "\"worker\""
+      ]
+    },
+    "562": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "inner_txn_params%0%%param_AssetSender_idx_0#0",
+        "maybe_exists%5#0",
+        "maybe_value%4#0",
+        "maybe_value%5#0"
+      ],
+      "stack_out": [
+        "maybe_value%4#0",
+        "inner_txn_params%0%%param_AssetSender_idx_0#0",
+        "maybe_value%5#0",
+        "maybe_exists%5#0"
+      ]
+    },
+    "563": {
+      "error": "check self.worker exists",
+      "op": "assert // check self.worker exists",
+      "stack_out": [
+        "maybe_value%4#0",
+        "inner_txn_params%0%%param_AssetSender_idx_0#0",
+        "maybe_value%5#0"
+      ]
+    },
+    "564": {
+      "op": "itxn_field AssetReceiver",
+      "stack_out": [
+        "maybe_value%4#0",
+        "inner_txn_params%0%%param_AssetSender_idx_0#0"
+      ]
+    },
+    "566": {
+      "op": "itxn_field AssetSender",
+      "stack_out": [
+        "maybe_value%4#0"
+      ]
+    },
+    "568": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "1",
+        "maybe_value%4#0"
+      ],
+      "stack_out": [
+        "maybe_value%4#0",
+        "1"
+      ]
+    },
+    "569": {
+      "op": "itxn_field AssetAmount",
+      "stack_out": [
+        "maybe_value%4#0"
+      ]
+    },
+    "571": {
+      "op": "itxn_field XferAsset",
+      "stack_out": []
+    },
+    "573": {
+      "op": "pushint 4 // axfer",
+      "defined_out": [
+        "axfer"
+      ],
+      "stack_out": [
+        "axfer"
+      ]
+    },
+    "575": {
+      "op": "itxn_field TypeEnum",
+      "stack_out": []
+    },
+    "577": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "578": {
+      "op": "itxn_field Fee",
+      "stack_out": []
+    },
+    "580": {
+      "op": "itxn_submit"
+    },
+    "581": {
+      "op": "bytec 5 // \"credential_claimed\"",
+      "stack_out": [
+        "\"credential_claimed\""
+      ]
+    },
+    "583": {
+      "op": "intc_1 // 1",
+      "stack_out": [
+        "\"credential_claimed\"",
+        "1"
+      ]
+    },
+    "584": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "585": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "586": {
+      "op": "bytec_0 // \"credential_asset_id\"",
+      "stack_out": [
+        "0",
+        "\"credential_asset_id\""
+      ]
+    },
+    "587": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%6#0",
+        "maybe_value%6#0"
+      ],
+      "stack_out": [
+        "maybe_value%6#0",
+        "maybe_exists%6#0"
+      ]
+    },
+    "588": {
+      "error": "check self.credential_asset_id exists",
+      "op": "assert // check self.credential_asset_id exists",
+      "stack_out": [
+        "maybe_value%6#0"
+      ]
+    },
+    "589": {
+      "retsub": true,
+      "op": "retsub"
+    }
+  }
+}

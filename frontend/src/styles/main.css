@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700&family=Fustat:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #050505; /* Deep dark background */
+  color: #eeeeee;
+  font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glass Nav */
+.glass-nav {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+/* Cards */
+.card {
+  @apply bg-white/5 backdrop-blur-2xl rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-white/10 transition-all duration-300 hover:border-white/20;
+}
+
+/* Inputs */
+.input {
+  @apply w-full bg-black/40 border border-white/10 text-white px-4 py-3 rounded-xl focus:border-[#34c759] focus:ring-2 focus:ring-[#34c759]/20 outline-none transition-all placeholder-white/30 font-medium;
+}
+
+/* Buttons */
+.btn-primary {
+  @apply bg-white text-black px-6 py-3 rounded-xl font-semibold transition-all hover:bg-white/90 active:scale-[0.98] flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.1)];
+}
+
+.btn-secondary {
+  @apply bg-white/5 border border-white/10 text-white px-6 py-3 rounded-xl font-semibold transition-all hover:bg-white/10 active:scale-[0.98] flex items-center justify-center gap-2 shadow-sm;
+}
+
+.btn-danger {
+  @apply text-[#ff453a] hover:text-[#ff6961] hover:bg-[#ff453a]/10 px-3 py-1.5 rounded-lg text-sm transition-colors flex items-center gap-1 border border-transparent hover:border-[#ff453a]/20;
+}
+
+/* Text Gradient */
+.text-gradient {
+  background: linear-gradient(135deg, #0a84ff 0%, #30d158 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* No scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

@@ -1,0 +1,45 @@
+{
+  "name": "workproof-backend",
+  "version": "1.0.0",
+  "description": "WorkProof backend service - Razorpay + Algorand integration for verifiable work contracts",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "db:init": "node scripts/initDatabase.js",
+    "test": "jest",
+    "watcher": "node scripts/startWatcher.js"
+  },
+  "dependencies": {
+    "algosdk": "^2.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "eventsource": "^2.0.2",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "ioredis": "^5.3.2",
+    "moment": "^2.29.4",
+    "puppeteer": "^21.5.0",
+    "qrcode": "^1.5.3",
+    "razorpay": "^2.9.2",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "algorand",
+    "blockchain",
+    "workproof",
+    "razorpay",
+    "smart-contracts",
+    "escrow"
+  ],
+  "author": "WorkProof Team",
+  "license": "MIT"
+}
