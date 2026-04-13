@@ -168,6 +168,9 @@ cython_debug/
 # NPM
 node_modules
 
+# Local release artifact
+/Hackathon-QuickStart-template-main.zip
+
 # Keep only final root README markdown in repository
 *.md
 !/README.md
