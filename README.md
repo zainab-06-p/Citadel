@@ -4,6 +4,11 @@ Citadel is a blockchain-enabled work escrow and payout platform designed to conv
 
 The platform helps contractors, supervisors, workers, and institutions collaborate with transparent milestone workflows, escrow-backed commitments, payout proofs, compliance controls, and institution-grade underwriting signals.
 
+## Live Deployment
+
+- Frontend (Vercel): https://frontend-six-livid-85.vercel.app
+- Backend API: Set `VITE_BACKEND_URL` in Vercel to your deployed backend domain.
+
 ## Why Citadel
 
 Gig and informal workers often face three problems:
