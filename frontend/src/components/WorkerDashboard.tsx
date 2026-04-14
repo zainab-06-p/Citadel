@@ -7,6 +7,7 @@ import {
   Shield, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { useWallet } from '@txnlab/use-wallet-react';
+import { BACKEND_URL } from '../utils/getBackendUrl';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Payment {
@@ -43,8 +44,6 @@ interface ContractSummary {
   status: string;
   algoTxid: string;
 }
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function shortAddr(addr: string) {

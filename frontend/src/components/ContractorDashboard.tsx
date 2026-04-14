@@ -4,6 +4,7 @@ import { Briefcase, CreditCard, Plus, Trash2, CheckCircle, ExternalLink } from '
 import { useWallet } from '@txnlab/use-wallet-react';
 import algosdk from 'algosdk';
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs';
+import { BACKEND_URL } from '../utils/getBackendUrl';
 
 type MilestoneInput = { description: string; amount: number };
 
@@ -30,7 +31,6 @@ export function ContractorDashboard() {
   const [paymentStatus, setPaymentStatus] = useState<'idle' | 'processing' | 'success'>('idle');
   const [algoToInrRate, setAlgoToInrRate] = useState<number | null>(null);
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
   const totalAmount = milestones.reduce((sum, m) => sum + (Number(m.amount) || 0), 0);
   const estimatedInr = useMemo(() => {
     if (!algoToInrRate) return null;
@@ -41,7 +41,7 @@ export function ContractorDashboard() {
     let isMounted = true;
     const loadRate = async () => {
       try {
-        const response = await fetch(`${backendUrl}/api/algo-payment/rate`);
+        const response = await fetch(`${BACKEND_URL}/api/algo-payment/rate`);
         const payload = await response.json();
         if (isMounted && payload?.success && payload?.data?.algoToINR) {
           setAlgoToInrRate(Number(payload.data.algoToINR));
@@ -55,7 +55,7 @@ export function ContractorDashboard() {
     return () => {
       isMounted = false;
     };
-  }, [backendUrl]);
+  }, []);
 
   const addMilestone = () => {
     if (milestones.length >= MAX_MILESTONES) {
@@ -109,7 +109,7 @@ export function ContractorDashboard() {
       );
 
       // 1) Fetch compiled WorkProof programs for app deployment.
-      const programsRes = await fetch(`${backendUrl}/api/algo-payment/workproof-programs`);
+      const programsRes = await fetch(`${BACKEND_URL}/api/algo-payment/workproof-programs`);
       const programsPayload = await programsRes.json();
       if (!programsRes.ok || !programsPayload?.success) {
         throw new Error(programsPayload?.error || 'Failed to load WorkProof programs');
@@ -199,7 +199,7 @@ export function ContractorDashboard() {
       const setupCallTxId = setupResult.txIDs[setupResult.txIDs.length - 1];
 
       // 4) Persist deployed contract and milestones in backend DB.
-      const registerRes = await fetch(`${backendUrl}/api/algo-payment/register-deployment`, {
+      const registerRes = await fetch(`${BACKEND_URL}/api/algo-payment/register-deployment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

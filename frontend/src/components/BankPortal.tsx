@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Building, User, IndianRupee, ShieldCheck, CheckCircle2, FileText, ExternalLink } from 'lucide-react';
 import { AICreditScore } from './AICreditScore';
+import { BACKEND_URL } from '../utils/getBackendUrl';
 
 interface WorkerProfile {
   name: string;
@@ -23,7 +24,6 @@ interface WorkerProfile {
   }>;
 }
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 export function BankPortal() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeAddress, setActiveAddress] = useState('');

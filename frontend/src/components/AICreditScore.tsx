@@ -3,6 +3,7 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { BACKEND_URL } from '../utils/getBackendUrl';
 
 interface AICreditScoreProps {
   workerAddress: string;
@@ -39,8 +40,7 @@ export function AICreditScore({ workerAddress, size = 'md', showDetails = false 
     const fetchData = async () => {
       setLoading(true);
       try {
-        const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
-        const res = await fetch(`${backendUrl}/api/workers/${workerAddress}/credit-score`);
+        const res = await fetch(`${BACKEND_URL}/api/workers/${workerAddress}/credit-score`);
         if (!res.ok) throw new Error('API fetch failed');
         const json = await res.json();
         // Handle both direct response and wrapped {success, data} format

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { History, Briefcase, UserCircle2, ClipboardCheck, Clock, ExternalLink } from 'lucide-react';
 import { useWallet } from '@txnlab/use-wallet-react';
+import { BACKEND_URL } from '../utils/getBackendUrl';
 
 type ContractHistoryItem = {
   appId: number;
@@ -17,8 +18,6 @@ type ContractHistoryItem = {
   milestoneCount: number;
   paidMilestones: number;
 };
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 function roleChip(role: string) {
   if (role === 'contractor') return { label: 'Contractor', icon: <Briefcase size={12} />, color: 'text-[#0a84ff] border-[#0a84ff]/25 bg-[#0a84ff]/10' };

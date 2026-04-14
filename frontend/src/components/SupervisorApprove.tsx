@@ -4,6 +4,7 @@ import { CheckCircle, ClipboardCheck, ExternalLink, ShieldAlert } from 'lucide-r
 import { useWallet } from '@txnlab/use-wallet-react';
 import algosdk from 'algosdk';
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs';
+import { BACKEND_URL } from '../utils/getBackendUrl';
 
 const ASA_MIN_BALANCE_INCREMENT_MICROALGO = 100_000;
 const MAX_MILESTONES = 20;
@@ -31,10 +32,8 @@ export function SupervisorApprove() {
     setResult(null);
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
-
       // Pre-flight validation from backend to avoid costly on-chain assert failures.
-      const contractRes = await fetch(`${backendUrl}/api/contracts/${appId}`);
+      const contractRes = await fetch(`${BACKEND_URL}/api/contracts/${appId}`);
       const contractPayload = await contractRes.json().catch(() => ({}));
       if (!contractRes.ok || !contractPayload?.success) {
         throw new Error(contractPayload?.error || 'Contract not found for this App ID');
@@ -154,7 +153,7 @@ export function SupervisorApprove() {
         await algosdk.waitForConfirmation(algodClient, approvalProofTxId, 4);
       }
 
-      const response = await fetch(`${backendUrl}/api/contracts/${appId}/approve-milestone`, {
+      const response = await fetch(`${BACKEND_URL}/api/contracts/${appId}/approve-milestone`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

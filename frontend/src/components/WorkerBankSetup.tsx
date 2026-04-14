@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Banknote, CheckCircle, IndianRupee, AlertCircle, Edit3 } from 'lucide-react';
 import { useWallet } from '@txnlab/use-wallet-react';
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+import { BACKEND_URL } from '../utils/getBackendUrl';
 
 interface BankDetails {
   registered: boolean;

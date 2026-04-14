@@ -20,14 +20,19 @@ const { errorHandler } = require('./middleware/errorHandler');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const configuredOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 // Security middleware
 app.use(helmet());
 
 // Log CORS configuration for debugging
-console.log('📡 CORS enabled for:', process.env.FRONTEND_URL || '*');
+console.log('📡 CORS enabled for:', configuredOrigins.length ? configuredOrigins.join(', ') : '*');
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: configuredOrigins.length ? configuredOrigins : '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -138,12 +143,14 @@ app.use(errorHandler);
 // Start server
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
+    const publicBaseUrl = process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`;
+
     console.log(`╔════════════════════════════════════════════════════════╗`);
     console.log(`║           WorkProof Backend Server                      ║`);
     console.log(`╠════════════════════════════════════════════════════════╣`);
     console.log(`║  Port: ${PORT.toString().padEnd(46)} ║`);
     console.log(`║  Environment: ${process.env.NODE_ENV || 'development'}${''.padEnd(36)} ║`);
-    console.log(`║  Health Check: http://localhost:${PORT}/health${''.padEnd(19)} ║`);
+    console.log(`║  Health Check: ${`${publicBaseUrl}/health`.padEnd(38)} ║`);
     console.log(`╚════════════════════════════════════════════════════════╝`);
     console.log();
     console.log('Waiting for requests...');
