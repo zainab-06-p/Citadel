@@ -1,0 +1,3 @@
+Address : 2TVB67VYDERJKPLMIKQTZMPTCAXIVHOM4WAXJDH24HZQVCER4UDJ6EDS6I
+Mnemonic: weird oven upgrade leopard typical exit meadow leader stereo wall swarm evil uphold boil beef arrange prefer rack jump torch tag cute erode above mask
+Dispenser URL: https://bank.testnet.algorand.network/?account=2TVB67VYDERJKPLMIKQTZMPTCAXIVHOM4WAXJDH24HZQVCER4UDJ6EDS6I

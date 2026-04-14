@@ -1,0 +1,10 @@
+Deployed Contract
+
+App ID: 758015705
+App Address: 6LQAPVQ245HKDISNEX7JRO3CE4MMFAFB7WASDXPNMRQWE3PF3PW2OGVHPM
+Network	Algorand TestNet
+Deploy Tx: P2OM2NMJNO7GANWYKOU3F3FXCELOVBFLRUUIYBJEJKKV33ZAPH6Q
+Deployer Account (generated fresh during this session)
+
+Address: 4ESLGM2JUKHDVGDGTJHWKMNWKVSQC3TSEBGFWFNVUH7EU7AVHOMEOQB7T4
+25-word Algorand Mnemonic: boy accident place clarify dog cycle carpet buffalo believe run spin cake avoid phrase real toe antenna define age can merge desert tourist absent present

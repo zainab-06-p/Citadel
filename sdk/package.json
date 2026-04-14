@@ -1,0 +1,35 @@
+{
+  "name": "@workproof/consent-sdk",
+  "version": "1.0.0",
+  "description": "DPDP-compliant consent management SDK for Algorand - On-chain audit trails for data sharing permissions",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "contracts",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "algorand",
+    "consent",
+    "dpdp",
+    "blockchain",
+    "audit",
+    "privacy",
+    "regtech"
+  ],
+  "author": "WorkProof Team",
+    "license": "MIT",
+  "peerDependencies": {
+    "algosdk": "^2.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
