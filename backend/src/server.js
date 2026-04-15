@@ -144,8 +144,8 @@ app.use((req, res) => {
 // Global error handler
 app.use(errorHandler);
 
-// Start server
-if (process.env.NODE_ENV !== 'test') {
+// Start server (only if not running on Vercel serverless)
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   app.listen(PORT, () => {
     const publicBaseUrl = process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`;
 
