@@ -6,7 +6,7 @@ The platform helps contractors, supervisors, workers, and institutions collabora
 
 ## Live Deployment
 
-- Frontend (Vercel): https://frontend-six-livid-85.vercel.app
+- Frontend (Vercel): https://ctiadel.vercel.app
 - Backend API: Set `VITE_BACKEND_URL` in Vercel to your deployed backend domain.
 
 ## Why Citadel
