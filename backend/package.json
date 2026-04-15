@@ -11,6 +11,7 @@
     "watcher": "node scripts/startWatcher.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.103.0",
     "algosdk": "^2.7.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

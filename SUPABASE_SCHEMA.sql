@@ -259,6 +259,22 @@ CREATE TABLE watch_cursor (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Worker payout details (UPI/bank) used for INR disbursement routing
+CREATE TABLE worker_bank_details (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    worker_address TEXT UNIQUE NOT NULL,
+    upi_id TEXT,
+    bank_account_number TEXT,
+    bank_ifsc TEXT,
+    account_holder_name TEXT,
+    payment_mode TEXT DEFAULT 'UPI' CHECK (payment_mode IN ('UPI', 'IMPS', 'NEFT')),
+    fund_account_id TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_worker_bank_details_address ON worker_bank_details(worker_address);
+
 -- Blockchain transaction log
 CREATE TABLE blockchain_transactions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
