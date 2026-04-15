@@ -8,3 +8,6 @@ database/*.db
 coverage/
 .vscode/
 .idea/
+
+.vercel
+.env*.local
