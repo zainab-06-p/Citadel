@@ -1,0 +1,523 @@
+#pragma version 10
+#pragma typetrack false
+
+// smart_contracts.workproof.contract.WorkProof.__algopy_entrypoint_with_init() -> uint64:
+main:
+    intcblock 0 1
+    bytecblock "credential_asset_id" "worker" "milestone_paid" "milestone_amount" "escrow_funded" "credential_claimed" "supervisor" "milestone_name" 0x151f7c75 "contractor"
+    txn ApplicationID
+    bnz main_after_if_else@2
+    // smart_contracts/workproof/contract.py:19-20
+    // # Initialize contract storages on deployment
+    // self.contractor = Account()
+    bytec 9 // "contractor"
+    global ZeroAddress
+    app_global_put
+    // smart_contracts/workproof/contract.py:21
+    // self.supervisor = Account()
+    bytec 6 // "supervisor"
+    global ZeroAddress
+    app_global_put
+    // smart_contracts/workproof/contract.py:22
+    // self.worker = Account()
+    bytec_1 // "worker"
+    global ZeroAddress
+    app_global_put
+    // smart_contracts/workproof/contract.py:24
+    // self.milestone_amount = UInt64(0)
+    bytec_3 // "milestone_amount"
+    intc_0 // 0
+    app_global_put
+    // smart_contracts/workproof/contract.py:25
+    // self.milestone_name = Bytes(b"")
+    bytec 7 // "milestone_name"
+    pushbytes 0x
+    app_global_put
+    // smart_contracts/workproof/contract.py:27
+    // self.milestone_paid = False
+    bytec_2 // "milestone_paid"
+    intc_0 // 0
+    app_global_put
+    // smart_contracts/workproof/contract.py:28
+    // self.escrow_funded = False
+    bytec 4 // "escrow_funded"
+    intc_0 // 0
+    app_global_put
+    // smart_contracts/workproof/contract.py:29
+    // self.credential_asset_id = Asset(0)
+    bytec_0 // "credential_asset_id"
+    intc_0 // 0
+    app_global_put
+    // smart_contracts/workproof/contract.py:30
+    // self.credential_claimed = False
+    bytec 5 // "credential_claimed"
+    intc_0 // 0
+    app_global_put
+
+main_after_if_else@2:
+    // smart_contracts/workproof/contract.py:5
+    // class WorkProof(ARC4Contract):
+    txn NumAppArgs
+    bz main_bare_routing@8
+    pushbytess 0x39ac9d1c 0xb6854c85 0xb7588f1d // method "create_work_contract(account,account,account,uint64,byte[],pay)uint64", method "approve_milestone(byte[],byte[])uint64", method "claim_credential()uint64"
+    txna ApplicationArgs 0
+    match main_create_work_contract_route@5 main_approve_milestone_route@6 main_claim_credential_route@7
+
+main_after_if_else@10:
+    // smart_contracts/workproof/contract.py:5
+    // class WorkProof(ARC4Contract):
+    intc_0 // 0
+    return
+
+main_claim_credential_route@7:
+    // smart_contracts/workproof/contract.py:112
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    callsub claim_credential
+    itob
+    bytec 8 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_1 // 1
+    return
+
+main_approve_milestone_route@6:
+    // smart_contracts/workproof/contract.py:67
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/workproof/contract.py:5
+    // class WorkProof(ARC4Contract):
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // smart_contracts/workproof/contract.py:67
+    // @abimethod()
+    callsub approve_milestone
+    itob
+    bytec 8 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_1 // 1
+    return
+
+main_create_work_contract_route@5:
+    // smart_contracts/workproof/contract.py:32
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/workproof/contract.py:5
+    // class WorkProof(ARC4Contract):
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    txna ApplicationArgs 2
+    btoi
+    txnas Accounts
+    txna ApplicationArgs 3
+    btoi
+    txnas Accounts
+    txna ApplicationArgs 4
+    btoi
+    txna ApplicationArgs 5
+    extract 2 0
+    txn GroupIndex
+    intc_1 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_1 // pay
+    ==
+    assert // transaction type is pay
+    // smart_contracts/workproof/contract.py:32
+    // @abimethod()
+    callsub create_work_contract
+    itob
+    bytec 8 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_1 // 1
+    return
+
+main_bare_routing@8:
+    // smart_contracts/workproof/contract.py:5
+    // class WorkProof(ARC4Contract):
+    txn OnCompletion
+    bnz main_after_if_else@10
+    txn ApplicationID
+    !
+    assert // can only call when creating
+    intc_1 // 1
+    return
+
+
+// smart_contracts.workproof.contract.WorkProof.create_work_contract(contractor: bytes, supervisor: bytes, worker: bytes, milestone_amount: uint64, milestone_name: bytes, pay_txn: uint64) -> uint64:
+create_work_contract:
+    // smart_contracts/workproof/contract.py:32-41
+    // @abimethod()
+    // def create_work_contract(
+    //     self,
+    //     contractor: Account,
+    //     supervisor: Account,
+    //     worker: Account,
+    //     milestone_amount: UInt64,
+    //     milestone_name: Bytes,
+    //     pay_txn: gtxn.PaymentTransaction,
+    // ) -> UInt64:
+    proto 6 1
+    // smart_contracts/workproof/contract.py:47
+    // assert Txn.sender == contractor, "Sender must be contractor"
+    txn Sender
+    frame_dig -6
+    ==
+    assert // Sender must be contractor
+    // smart_contracts/workproof/contract.py:48
+    // assert pay_txn.sender == contractor, "Escrow sender mismatch"
+    frame_dig -1
+    gtxns Sender
+    frame_dig -6
+    ==
+    assert // Escrow sender mismatch
+    // smart_contracts/workproof/contract.py:49
+    // assert pay_txn.receiver == Global.current_application_address, "Escrow receiver must be the contract"
+    frame_dig -1
+    gtxns Receiver
+    global CurrentApplicationAddress
+    ==
+    assert // Escrow receiver must be the contract
+    // smart_contracts/workproof/contract.py:50
+    // assert pay_txn.amount == milestone_amount, "Escrow amount must equal milestone amount"
+    frame_dig -1
+    gtxns Amount
+    frame_dig -3
+    ==
+    assert // Escrow amount must equal milestone amount
+    // smart_contracts/workproof/contract.py:51
+    // assert milestone_amount > UInt64(0), "Milestone amount must be > 0"
+    frame_dig -3
+    assert // Milestone amount must be > 0
+    // smart_contracts/workproof/contract.py:52
+    // assert not self.escrow_funded, "Escrow already funded"
+    intc_0 // 0
+    bytec 4 // "escrow_funded"
+    app_global_get_ex
+    assert // check self.escrow_funded exists
+    !
+    assert // Escrow already funded
+    // smart_contracts/workproof/contract.py:54
+    // self.contractor = contractor
+    bytec 9 // "contractor"
+    frame_dig -6
+    app_global_put
+    // smart_contracts/workproof/contract.py:55
+    // self.supervisor = supervisor
+    bytec 6 // "supervisor"
+    frame_dig -5
+    app_global_put
+    // smart_contracts/workproof/contract.py:56
+    // self.worker = worker
+    bytec_1 // "worker"
+    frame_dig -4
+    app_global_put
+    // smart_contracts/workproof/contract.py:58
+    // self.milestone_amount = milestone_amount
+    bytec_3 // "milestone_amount"
+    frame_dig -3
+    app_global_put
+    // smart_contracts/workproof/contract.py:59
+    // self.milestone_name = milestone_name
+    bytec 7 // "milestone_name"
+    frame_dig -2
+    app_global_put
+    // smart_contracts/workproof/contract.py:61
+    // self.milestone_paid = False
+    bytec_2 // "milestone_paid"
+    intc_0 // 0
+    app_global_put
+    // smart_contracts/workproof/contract.py:62
+    // self.escrow_funded = True
+    bytec 4 // "escrow_funded"
+    intc_1 // 1
+    app_global_put
+    // smart_contracts/workproof/contract.py:63
+    // self.credential_asset_id = Asset(0)
+    bytec_0 // "credential_asset_id"
+    intc_0 // 0
+    app_global_put
+    // smart_contracts/workproof/contract.py:65
+    // return self.milestone_amount
+    intc_0 // 0
+    bytec_3 // "milestone_amount"
+    app_global_get_ex
+    assert // check self.milestone_amount exists
+    retsub
+
+
+// smart_contracts.workproof.contract.WorkProof.approve_milestone(metadata_url: bytes, metadata_hash: bytes) -> uint64:
+approve_milestone:
+    // smart_contracts/workproof/contract.py:67-72
+    // @abimethod()
+    // def approve_milestone(
+    //     self,
+    //     metadata_url: Bytes,
+    //     metadata_hash: Bytes,
+    // ) -> UInt64:
+    proto 2 1
+    // smart_contracts/workproof/contract.py:78
+    // assert self.escrow_funded, "Escrow not funded"
+    intc_0 // 0
+    bytec 4 // "escrow_funded"
+    app_global_get_ex
+    assert // check self.escrow_funded exists
+    assert // Escrow not funded
+    // smart_contracts/workproof/contract.py:79
+    // assert not self.milestone_paid, "Milestone already paid"
+    intc_0 // 0
+    bytec_2 // "milestone_paid"
+    app_global_get_ex
+    assert // check self.milestone_paid exists
+    !
+    assert // Milestone already paid
+    // smart_contracts/workproof/contract.py:80
+    // assert Txn.sender == self.supervisor, "Sender must be supervisor"
+    txn Sender
+    intc_0 // 0
+    bytec 6 // "supervisor"
+    app_global_get_ex
+    assert // check self.supervisor exists
+    ==
+    assert // Sender must be supervisor
+    // smart_contracts/workproof/contract.py:82-98
+    // # 1) Mint the credential ASA.
+    // # Note: We mint to the app account; later `claim_credential()` transfers it to the worker.
+    // # This avoids transfer failures when the worker has not opted into the ASA yet.
+    // asset_config_result = itxn.AssetConfig(
+    //     config_asset=Asset(),
+    //     total=UInt64(1),
+    //     decimals=UInt64(0),
+    //     default_frozen=False,
+    //     unit_name=Bytes(b"WP"),
+    //     asset_name=self.milestone_name,
+    //     url=metadata_url,
+    //     metadata_hash=metadata_hash,
+    //     manager=Global.current_application_address,
+    //     reserve=Global.current_application_address,
+    //     freeze=Global.current_application_address,
+    //     clawback=Global.current_application_address,
+    // ).submit()
+    itxn_begin
+    // smart_contracts/workproof/contract.py:91
+    // asset_name=self.milestone_name,
+    intc_0 // 0
+    bytec 7 // "milestone_name"
+    app_global_get_ex
+    assert // check self.milestone_name exists
+    // smart_contracts/workproof/contract.py:94
+    // manager=Global.current_application_address,
+    global CurrentApplicationAddress
+    // smart_contracts/workproof/contract.py:95-97
+    // reserve=Global.current_application_address,
+    // freeze=Global.current_application_address,
+    // clawback=Global.current_application_address,
+    dupn 3
+    itxn_field ConfigAssetClawback
+    itxn_field ConfigAssetFreeze
+    itxn_field ConfigAssetReserve
+    itxn_field ConfigAssetManager
+    frame_dig -1
+    itxn_field ConfigAssetMetadataHash
+    frame_dig -2
+    itxn_field ConfigAssetURL
+    itxn_field ConfigAssetName
+    // smart_contracts/workproof/contract.py:90
+    // unit_name=Bytes(b"WP"),
+    pushbytes 0x5750
+    itxn_field ConfigAssetUnitName
+    // smart_contracts/workproof/contract.py:89
+    // default_frozen=False,
+    intc_0 // 0
+    itxn_field ConfigAssetDefaultFrozen
+    // smart_contracts/workproof/contract.py:88
+    // decimals=UInt64(0),
+    intc_0 // 0
+    itxn_field ConfigAssetDecimals
+    // smart_contracts/workproof/contract.py:87
+    // total=UInt64(1),
+    intc_1 // 1
+    itxn_field ConfigAssetTotal
+    // smart_contracts/workproof/contract.py:82-85
+    // # 1) Mint the credential ASA.
+    // # Note: We mint to the app account; later `claim_credential()` transfers it to the worker.
+    // # This avoids transfer failures when the worker has not opted into the ASA yet.
+    // asset_config_result = itxn.AssetConfig(
+    pushint 3 // acfg
+    itxn_field TypeEnum
+    intc_0 // 0
+    itxn_field Fee
+    // smart_contracts/workproof/contract.py:82-98
+    // # 1) Mint the credential ASA.
+    // # Note: We mint to the app account; later `claim_credential()` transfers it to the worker.
+    // # This avoids transfer failures when the worker has not opted into the ASA yet.
+    // asset_config_result = itxn.AssetConfig(
+    //     config_asset=Asset(),
+    //     total=UInt64(1),
+    //     decimals=UInt64(0),
+    //     default_frozen=False,
+    //     unit_name=Bytes(b"WP"),
+    //     asset_name=self.milestone_name,
+    //     url=metadata_url,
+    //     metadata_hash=metadata_hash,
+    //     manager=Global.current_application_address,
+    //     reserve=Global.current_application_address,
+    //     freeze=Global.current_application_address,
+    //     clawback=Global.current_application_address,
+    // ).submit()
+    itxn_submit
+    itxn CreatedAssetID
+    // smart_contracts/workproof/contract.py:102-103
+    // # 2) Release the milestone ALGO to the worker.
+    // itxn.Payment(receiver=self.worker, amount=self.milestone_amount, fee=UInt64(0)).submit()
+    itxn_begin
+    intc_0 // 0
+    bytec_1 // "worker"
+    app_global_get_ex
+    assert // check self.worker exists
+    intc_0 // 0
+    bytec_3 // "milestone_amount"
+    app_global_get_ex
+    assert // check self.milestone_amount exists
+    itxn_field Amount
+    itxn_field Receiver
+    intc_1 // pay
+    itxn_field TypeEnum
+    intc_0 // 0
+    itxn_field Fee
+    itxn_submit
+    // smart_contracts/workproof/contract.py:105-106
+    // # 3) Persist completion state for certificate verification.
+    // self.milestone_paid = True
+    bytec_2 // "milestone_paid"
+    intc_1 // 1
+    app_global_put
+    // smart_contracts/workproof/contract.py:107
+    // self.credential_asset_id = credential_asset_id
+    bytec_0 // "credential_asset_id"
+    swap
+    app_global_put
+    // smart_contracts/workproof/contract.py:108
+    // self.credential_claimed = False
+    bytec 5 // "credential_claimed"
+    intc_0 // 0
+    app_global_put
+    // smart_contracts/workproof/contract.py:110
+    // return self.credential_asset_id.id
+    intc_0 // 0
+    bytec_0 // "credential_asset_id"
+    app_global_get_ex
+    assert // check self.credential_asset_id exists
+    retsub
+
+
+// smart_contracts.workproof.contract.WorkProof.claim_credential() -> uint64:
+claim_credential:
+    // smart_contracts/workproof/contract.py:119
+    // assert self.milestone_paid, "Milestone not approved yet"
+    intc_0 // 0
+    bytec_2 // "milestone_paid"
+    app_global_get_ex
+    assert // check self.milestone_paid exists
+    assert // Milestone not approved yet
+    // smart_contracts/workproof/contract.py:120
+    // assert not self.credential_claimed, "Credential already claimed"
+    intc_0 // 0
+    bytec 5 // "credential_claimed"
+    app_global_get_ex
+    assert // check self.credential_claimed exists
+    !
+    assert // Credential already claimed
+    // smart_contracts/workproof/contract.py:121
+    // assert self.credential_asset_id != Asset(0), "Missing credential asset id"
+    intc_0 // 0
+    bytec_0 // "credential_asset_id"
+    app_global_get_ex
+    assert // check self.credential_asset_id exists
+    assert // Missing credential asset id
+    // smart_contracts/workproof/contract.py:122
+    // assert Txn.sender == self.worker, "Sender must be worker"
+    txn Sender
+    intc_0 // 0
+    bytec_1 // "worker"
+    app_global_get_ex
+    assert // check self.worker exists
+    ==
+    assert // Sender must be worker
+    // smart_contracts/workproof/contract.py:124-129
+    // itxn.AssetTransfer(
+    //     xfer_asset=self.credential_asset_id,
+    //     asset_amount=UInt64(1),
+    //     asset_sender=Global.current_application_address,
+    //     asset_receiver=self.worker,
+    // ).submit()
+    itxn_begin
+    // smart_contracts/workproof/contract.py:125
+    // xfer_asset=self.credential_asset_id,
+    intc_0 // 0
+    bytec_0 // "credential_asset_id"
+    app_global_get_ex
+    assert // check self.credential_asset_id exists
+    // smart_contracts/workproof/contract.py:127
+    // asset_sender=Global.current_application_address,
+    global CurrentApplicationAddress
+    // smart_contracts/workproof/contract.py:128
+    // asset_receiver=self.worker,
+    intc_0 // 0
+    bytec_1 // "worker"
+    app_global_get_ex
+    assert // check self.worker exists
+    itxn_field AssetReceiver
+    itxn_field AssetSender
+    // smart_contracts/workproof/contract.py:126
+    // asset_amount=UInt64(1),
+    intc_1 // 1
+    itxn_field AssetAmount
+    itxn_field XferAsset
+    // smart_contracts/workproof/contract.py:124
+    // itxn.AssetTransfer(
+    pushint 4 // axfer
+    itxn_field TypeEnum
+    intc_0 // 0
+    itxn_field Fee
+    // smart_contracts/workproof/contract.py:124-129
+    // itxn.AssetTransfer(
+    //     xfer_asset=self.credential_asset_id,
+    //     asset_amount=UInt64(1),
+    //     asset_sender=Global.current_application_address,
+    //     asset_receiver=self.worker,
+    // ).submit()
+    itxn_submit
+    // smart_contracts/workproof/contract.py:131
+    // self.credential_claimed = True
+    bytec 5 // "credential_claimed"
+    intc_1 // 1
+    app_global_put
+    // smart_contracts/workproof/contract.py:132
+    // return self.credential_asset_id.id
+    intc_0 // 0
+    bytec_0 // "credential_asset_id"
+    app_global_get_ex
+    assert // check self.credential_asset_id exists
+    retsub

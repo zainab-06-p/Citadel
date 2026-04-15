@@ -2,21 +2,43 @@ const { algodClient, indexerClient, algosdk } = require('../config/algorand');
 const fs = require('fs');
 const path = require('path');
 
-const WORKPROOF_APPROVAL_PATH = path.join(__dirname, '../../../projects/contracts/smart_contracts/artifacts/workproof/WorkProof.approval.teal');
-const WORKPROOF_CLEAR_PATH = path.join(__dirname, '../../../projects/contracts/smart_contracts/artifacts/workproof/WorkProof.clear.teal');
+const WORKPROOF_APPROVAL_CANDIDATE_PATHS = [
+  path.join(__dirname, '../../contracts/artifacts/workproof/WorkProof.approval.teal'),
+  path.join(__dirname, '../../../projects/contracts/smart_contracts/artifacts/workproof/WorkProof.approval.teal')
+];
+
+const WORKPROOF_CLEAR_CANDIDATE_PATHS = [
+  path.join(__dirname, '../../contracts/artifacts/workproof/WorkProof.clear.teal'),
+  path.join(__dirname, '../../../projects/contracts/smart_contracts/artifacts/workproof/WorkProof.clear.teal')
+];
 
 let compiledWorkProofCache = null;
 
+function resolveExistingPath(candidatePaths, label) {
+  const foundPath = candidatePaths.find((candidatePath) => fs.existsSync(candidatePath));
+
+  if (!foundPath) {
+    throw new Error(`${label} not found. Checked: ${candidatePaths.join(', ')}`);
+  }
+
+  return foundPath;
+}
+
 function readWorkProofPrograms() {
+  const approvalPath = resolveExistingPath(WORKPROOF_APPROVAL_CANDIDATE_PATHS, 'WorkProof approval program');
+  const clearPath = resolveExistingPath(WORKPROOF_CLEAR_CANDIDATE_PATHS, 'WorkProof clear program');
+
   return {
-    approvalTeal: fs.readFileSync(WORKPROOF_APPROVAL_PATH, 'utf8'),
-    clearTeal: fs.readFileSync(WORKPROOF_CLEAR_PATH, 'utf8')
+    approvalTeal: fs.readFileSync(approvalPath, 'utf8'),
+    clearTeal: fs.readFileSync(clearPath, 'utf8')
   };
 }
 
 function getWorkProofProgramVersion() {
-  const approvalStat = fs.statSync(WORKPROOF_APPROVAL_PATH);
-  const clearStat = fs.statSync(WORKPROOF_CLEAR_PATH);
+  const approvalPath = resolveExistingPath(WORKPROOF_APPROVAL_CANDIDATE_PATHS, 'WorkProof approval program');
+  const clearPath = resolveExistingPath(WORKPROOF_CLEAR_CANDIDATE_PATHS, 'WorkProof clear program');
+  const approvalStat = fs.statSync(approvalPath);
+  const clearStat = fs.statSync(clearPath);
   return `${approvalStat.mtimeMs}:${clearStat.mtimeMs}`;
 }
 

@@ -85,17 +85,25 @@ export function ContractorDashboard() {
     setLoading(true);
     setPaymentStatus('processing');
     try {
-      const normalizedMilestones = milestones.map((m) => ({
-        description: m.description.trim(),
-        amount: Number(m.amount)
-      }));
+      const normalizedMilestones = milestones
+        .map((m, index) => ({
+          position: index + 1,
+          description: m.description.trim(),
+          amount: Number(m.amount)
+        }))
+        // Ignore fully empty rows to prevent accidental extra-row failures.
+        .filter((m) => m.description.length > 0 || m.amount > 0);
 
-      const hasInvalidMilestones = normalizedMilestones.some(
+      if (normalizedMilestones.length === 0) {
+        throw new Error('Add at least one milestone with description and amount greater than 0');
+      }
+
+      const invalidMilestone = normalizedMilestones.find(
         (m) => !m.description || !Number.isFinite(m.amount) || m.amount <= 0
       );
 
-      if (hasInvalidMilestones) {
-        throw new Error('Each milestone needs a description and amount greater than 0');
+      if (invalidMilestone) {
+        throw new Error(`Milestone ${invalidMilestone.position} needs a description and amount greater than 0`);
       }
 
       const workerAddress = worker.trim();
