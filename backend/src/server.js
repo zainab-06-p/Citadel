@@ -25,16 +25,20 @@ const configuredOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-// Security middleware
-app.use(helmet());
+// Security middleware - allow CORS headers
+app.use(helmet({
+  crossOriginResourcePolicy: false
+}));
 
 // Log CORS configuration for debugging
 console.log('📡 CORS enabled for:', configuredOrigins.length ? configuredOrigins.join(', ') : '*');
 
 app.use(cors({
   origin: configuredOrigins.length ? configuredOrigins : '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
 }));
 
 // Rate limiting
