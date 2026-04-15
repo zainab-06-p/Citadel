@@ -10,6 +10,10 @@ const { razorpay } = require('../config/razorpay');
  */
 async function createOrder({ amount, currency = 'INR', notes = {} }) {
   try {
+    if (!razorpay) {
+      throw new Error('Razorpay is not configured on the server');
+    }
+
     const options = {
       amount: amount,
       currency: currency,
@@ -42,6 +46,10 @@ async function createOrder({ amount, currency = 'INR', notes = {} }) {
  */
 async function verifyPayment(paymentId) {
   try {
+    if (!razorpay) {
+      throw new Error('Razorpay is not configured on the server');
+    }
+
     const payment = await razorpay.payments.fetch(paymentId);
     return {
       id: payment.id,

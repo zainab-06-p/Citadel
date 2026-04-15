@@ -16,9 +16,14 @@ const receiptsRoutes = require('./routes/receipts');
 // Import middleware
 const { webhookAuth } = require('./middleware/webhookAuth');
 const { errorHandler } = require('./middleware/errorHandler');
+const database = require('./config/database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Vercel and similar platforms run behind a proxy and forward client IP headers.
+// Required for express-rate-limit to work without throwing validation errors.
+app.set('trust proxy', 1);
 
 const configuredOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '')
   .split(',')
@@ -97,6 +102,21 @@ app.use('/api/razorpay/webhook',
 // Regular JSON body parser for other routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Ensure DB schema exists before serving API routes.
+const dbInitPromise = database.initDatabase().catch((error) => {
+  console.error('Database initialization failed:', error);
+  throw error;
+});
+
+app.use(async (req, res, next) => {
+  try {
+    await dbInitPromise;
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+});
 
 // Apply payment limiter to order creation
 app.use('/api/razorpay/create-order', paymentLimiter);

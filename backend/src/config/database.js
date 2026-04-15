@@ -2,7 +2,8 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-const DB_DIR = path.join(__dirname, '../../database');
+const isVercelRuntime = Boolean(process.env.VERCEL);
+const DB_DIR = isVercelRuntime ? '/tmp' : path.join(__dirname, '../../database');
 const DB_PATH = path.join(DB_DIR, 'workproof.db');
 
 // Ensure the database directory exists
