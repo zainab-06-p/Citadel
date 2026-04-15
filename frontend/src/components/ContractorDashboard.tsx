@@ -116,6 +116,27 @@ export function ContractorDashboard() {
         String(algorandConfig.port || '')
       );
 
+      // Preflight wallet account checks to fail early with clear guidance.
+      const totalMicroAlgo = Math.round(totalAmount * 1e6);
+      const requiredMicroAlgo = totalMicroAlgo + APP_ESCROW_RESERVE_MICROALGO + 10_000;
+      let payerAccountInfo;
+
+      try {
+        payerAccountInfo = await algodClient.accountInformation(activeAddress).do();
+      } catch {
+        throw new Error(
+          'Connected wallet account was not found on Algorand TestNet. Fund this address on TestNet (Algo faucet), then reconnect the wallet and try again.'
+        );
+      }
+
+      if (!payerAccountInfo || Number(payerAccountInfo.amount || 0) < requiredMicroAlgo) {
+        const currentAlgo = Number(payerAccountInfo?.amount || 0) / 1e6;
+        const requiredAlgo = requiredMicroAlgo / 1e6;
+        throw new Error(
+          `Insufficient TestNet balance. Need about ${requiredAlgo.toFixed(3)} ALGO, but wallet has ${currentAlgo.toFixed(3)} ALGO.`
+        );
+      }
+
       // 1) Fetch compiled WorkProof programs for app deployment.
       const programsRes = await fetch(`${BACKEND_URL}/api/algo-payment/workproof-programs`);
       const programsPayload = await programsRes.json();
@@ -151,7 +172,6 @@ export function ContractorDashboard() {
       }
 
       // 3) Fund app escrow (+ reserve) and initialize app state in one atomic group.
-      const totalMicroAlgo = Math.round(totalAmount * 1e6);
       const appAddress = algosdk.getApplicationAddress(createdAppId);
       const milestoneLabel = normalizedMilestones
         .map((m) => m.description)
@@ -235,7 +255,14 @@ export function ContractorDashboard() {
 
     } catch (err) {
       console.error('Payment error:', err);
-      alert('Payment failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      const normalizedMessage = String(message || '').toLowerCase();
+
+      if (normalizedMessage.includes('account not found')) {
+        alert('Payment failed: The connected wallet account is not available on Algorand TestNet. Fund it with TestNet ALGO and reconnect wallet.');
+      } else {
+        alert('Payment failed: ' + message);
+      }
       setLoading(false);
       setPaymentStatus('idle');
     }
