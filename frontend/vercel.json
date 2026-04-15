@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://backend-rouge-iota.vercel.app/api/:path*"
+    }
+  ]
+}
