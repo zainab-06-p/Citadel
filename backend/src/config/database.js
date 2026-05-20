@@ -2,14 +2,22 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
+// ─── DB path: runtime-aware ────────────────────────────────────────────────────
+//  Render  → /var/data  (persistent disk mounted from render.yaml)
+//  Vercel  → /tmp       (ephemeral — only for cold-start table creation)
+//  Local   → backend/database/
 const isVercelRuntime = Boolean(process.env.VERCEL);
-const DB_DIR = isVercelRuntime ? '/tmp' : path.join(__dirname, '../../database');
-const DB_PATH = path.join(DB_DIR, 'workproof.db');
+const isRenderRuntime = Boolean(process.env.RENDER); // Render sets this automatically
 
-// Ensure the database directory exists
-if (!fs.existsSync(DB_DIR)) {
-  fs.mkdirSync(DB_DIR, { recursive: true });
-}
+const DB_DIR = isRenderRuntime
+  ? '/var/data'                                       // ✔ persistent disk
+  : isVercelRuntime
+    ? '/tmp'                                          // ephemeral (migrate to Render)
+    : path.join(__dirname, '../../database');         // local dev
+
+const DB_PATH = path.join(DB_DIR, 'workproof.db');
+console.log(`🗄️  DB path: ${DB_PATH} (${isRenderRuntime ? 'Render' : isVercelRuntime ? 'Vercel/tmp' : 'local'})`);
+
 
 // Create database connection
 const db = new sqlite3.Database(DB_PATH, (err) => {
