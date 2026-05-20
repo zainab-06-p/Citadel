@@ -1,0 +1,61 @@
+services:
+  - type: web
+    name: citadel-backend
+    env: node
+    plan: free
+    region: oregon
+    rootDir: backend
+
+    # Build configuration
+    buildCommand: npm install
+    startCommand: npm start
+
+    # Environment variables
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: FRONTEND_URL
+        value: https://frontend-six-livid-85.vercel.app
+
+      # Algorand Blockchain (Testnet)
+      - key: ALGORAND_SERVER
+        value: https://testnet-api.algonode.cloud
+      - key: ALGORAND_PORT
+        value: 443
+      - key: INDEXER_SERVER
+        value: https://testnet-idx.algonode.cloud
+      - key: INDEXER_PORT
+        value: 443
+
+      # WorkProof Smart Contracts (Algorand Testnet)
+      - key: WORKPROOF_APP_ID
+        value: 758015705
+      - key: WORKPROOF_APP_ADDRESS
+        value: 6LQAPVQ245HKDISNEX7JRO3CE4MMFAFB7WASDXPNMRQWE3PF3PW2OGVHPM
+      - key: DEPLOYER_ADDRESS
+        value: 4ESLGM2JUKHDVGDGTJHWKMNWKVSQC3TSEBGFWFNVUH7EU7AVHOMEOQB7T4
+
+      # Round 3 — Citadel DeFi Extension Contracts
+      - key: CREDIT_ORACLE_APP_ID
+        value: 761895422
+      - key: CREDIT_ORACLE_APP_ADDRESS
+        value: SMEWVDPQXAME63XNKTVG2RMGR4O5TVVRCT7O2COFQYTWVYZTR6LFOWKJK4
+      - key: MICROLEND_APP_ID
+        value: 761897101
+      - key: MICROLEND_APP_ADDRESS
+        value: P6GBAXVCMJRKBG5Y2SC3WGHRPMVT4XV5NM2XIT2HEF3QO6HZUQVUH5NVRM
+      - key: INVOICE_GUARD_APP_ID
+        value: 761898229
+      - key: INVOICE_GUARD_APP_ADDRESS
+        value: DFNM7AOQZELSN2374YEBCXF3ITEPPWF52FJIO6MOKPYM2FSDFXJNPNONLU
+
+    # Health check
+    healthCheckPath: /health
+
+    # Persistent disk — SQLite DB stored here permanently
+    disk:
+      name: citadel-data
+      mountPath: /var/data
+      sizeGB: 1
