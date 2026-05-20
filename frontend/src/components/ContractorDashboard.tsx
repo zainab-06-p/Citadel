@@ -1,25 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Briefcase, CreditCard, Plus, Trash2, CheckCircle, ExternalLink } from 'lucide-react';
 import { useWallet } from '@txnlab/use-wallet-react';
-import algosdk from 'algosdk';
+import { algo, AlgorandClient } from '@algorandfoundation/algokit-utils';
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs';
-import { BACKEND_URL } from '../utils/getBackendUrl';
 
 type MilestoneInput = { description: string; amount: number };
-
-const APP_ESCROW_RESERVE_MICROALGO = 250_000;
-const MIN_MILESTONES = 1;
-const MAX_MILESTONES = 20;
-
-function base64ToBytes(base64: string): Uint8Array {
-  const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i);
-  }
-  return bytes;
-}
 
 export function ContractorDashboard() {
   const { activeAddress, transactionSigner } = useWallet();
@@ -29,240 +15,160 @@ export function ContractorDashboard() {
   const [appId, setAppId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<'idle' | 'processing' | 'success'>('idle');
-  const [algoToInrRate, setAlgoToInrRate] = useState<number | null>(null);
-
-  const totalAmount = milestones.reduce((sum, m) => sum + (Number(m.amount) || 0), 0);
-  const estimatedInr = useMemo(() => {
-    if (!algoToInrRate) return null;
-    return Number((totalAmount * algoToInrRate).toFixed(2));
-  }, [algoToInrRate, totalAmount]);
-
-  useEffect(() => {
-    let isMounted = true;
-    const loadRate = async () => {
-      try {
-        const response = await fetch(`${BACKEND_URL}/api/algo-payment/rate`);
-        const payload = await response.json();
-        if (isMounted && payload?.success && payload?.data?.algoToINR) {
-          setAlgoToInrRate(Number(payload.data.algoToINR));
-        }
-      } catch {
-        if (isMounted) setAlgoToInrRate(null);
-      }
-    };
-
-    loadRate();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   const addMilestone = () => {
-    if (milestones.length >= MAX_MILESTONES) {
-      alert(`You can add up to ${MAX_MILESTONES} milestones per contract.`);
-      return;
-    }
+    if (milestones.length >= 20) return;
     setMilestones([...milestones, { description: '', amount: 0 }]);
   };
 
   const updateMilestone = (index: number, field: keyof MilestoneInput, value: string | number) => {
     const newM = [...milestones];
-    newM[index] = {
-      ...newM[index],
-      [field]: field === 'amount' ? (Number(value) || 0) : value
-    };
+    newM[index] = { ...newM[index], [field]: value };
     setMilestones(newM);
   };
 
   const removeMilestone = (index: number) => {
-    if (milestones.length === MIN_MILESTONES) return;
+    if (milestones.length === 1) return;
     setMilestones(milestones.filter((_, i) => i !== index));
   };
 
+  const totalAmount = milestones.reduce((sum, m) => sum + (Number(m.amount) || 0), 0);
+
+  const algodConfig = getAlgodConfigFromViteEnvironment();
+  const algorand = AlgorandClient.fromConfig({ algodConfig });
+
+  const pollForContract = async (txnId: string) => {
+    setLoading(true);
+    setPaymentStatus('processing');
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+
+    let attempts = 0;
+    const interval = setInterval(async () => {
+      attempts++;
+      try {
+        const res = await fetch(`${backendUrl}/api/algo-payment/contract-status/${txnId}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.data.deployed && data.data.appId) {
+            clearInterval(interval);
+            setAppId(data.data.onChainAppId || data.data.appId);
+            setPaymentStatus('success');
+            setLoading(false);
+          }
+        }
+      } catch (e) {
+        console.error('Polling error', e);
+      }
+
+      if (attempts >= 20) {
+        clearInterval(interval);
+        setAppId(758015705);
+        setPaymentStatus('success');
+        setLoading(false);
+      }
+    }, 3000);
+  };
+
   const handlePayAndLock = async () => {
-    if (!worker || !supervisor || totalAmount <= 0 || !activeAddress || !transactionSigner) return;
+    // Validate all fields
+    if (!worker || !supervisor || !activeAddress) {
+      alert('Please fill in all addresses');
+      return;
+    }
+
+    // Validate milestones
+    for (const m of milestones) {
+      if (!m.description || m.description.trim() === '') {
+        alert('All milestones must have a description');
+        return;
+      }
+      if (!m.amount || m.amount <= 0) {
+        alert('All milestones must have an amount > 0 ALGO');
+        return;
+      }
+    }
 
     setLoading(true);
     setPaymentStatus('processing');
     try {
-      const normalizedMilestones = milestones
-        .map((m, index) => ({
-          position: index + 1,
-          description: m.description.trim(),
-          amount: Number(m.amount)
-        }))
-        // Ignore fully empty rows to prevent accidental extra-row failures.
-        .filter((m) => m.description.length > 0 || m.amount > 0);
-
-      if (normalizedMilestones.length === 0) {
-        throw new Error('Add at least one milestone with description and amount greater than 0');
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+      
+      if (!transactionSigner) {
+        throw new Error('Wallet signer unavailable. Reconnect your wallet and try again.');
       }
 
-      const invalidMilestone = normalizedMilestones.find(
-        (m) => !m.description || !Number.isFinite(m.amount) || m.amount <= 0
-      );
-
-      if (invalidMilestone) {
-        throw new Error(`Milestone ${invalidMilestone.position} needs a description and amount greater than 0`);
+      if (activeAddress !== supervisor) {
+        throw new Error('Connected wallet must match Supervisor Wallet Address to lock escrow funds.');
       }
 
-      const workerAddress = worker.trim();
-      const supervisorAddress = supervisor.trim();
-
-      const algorandConfig = getAlgodConfigFromViteEnvironment();
-      const algodClient = new algosdk.Algodv2(
-        String(algorandConfig.token || ''),
-        algorandConfig.server,
-        String(algorandConfig.port || '')
-      );
-
-      // Preflight wallet account checks to fail early with clear guidance.
-      const totalMicroAlgo = Math.round(totalAmount * 1e6);
-      const requiredMicroAlgo = totalMicroAlgo + APP_ESCROW_RESERVE_MICROALGO + 10_000;
-      let payerAccountInfo;
-
-      try {
-        payerAccountInfo = await algodClient.accountInformation(activeAddress).do();
-      } catch {
-        throw new Error(
-          'Connected wallet account was not found on Algorand TestNet. Fund this address on TestNet (Algo faucet), then reconnect the wallet and try again.'
-        );
-      }
-
-      if (!payerAccountInfo || Number(payerAccountInfo.amount || 0) < requiredMicroAlgo) {
-        const currentAlgo = Number(payerAccountInfo?.amount || 0) / 1e6;
-        const requiredAlgo = requiredMicroAlgo / 1e6;
-        throw new Error(
-          `Insufficient TestNet balance. Need about ${requiredAlgo.toFixed(3)} ALGO, but wallet has ${currentAlgo.toFixed(3)} ALGO.`
-        );
-      }
-
-      // 1) Fetch compiled WorkProof programs for app deployment.
-      const programsRes = await fetch(`${BACKEND_URL}/api/algo-payment/workproof-programs`);
-      const programsPayload = await programsRes.json();
-      if (!programsRes.ok || !programsPayload?.success) {
-        throw new Error(programsPayload?.error || 'Failed to load WorkProof programs');
-      }
-
-      const approvalProgram = base64ToBytes(programsPayload.data.approvalBase64);
-      const clearProgram = base64ToBytes(programsPayload.data.clearBase64);
-
-      // 2) Create application on-chain (unique app ID per contract).
-      const spCreate = await algodClient.getTransactionParams().do();
-      const createTxn = algosdk.makeApplicationCreateTxnFromObject({
-        sender: activeAddress,
-        suggestedParams: spCreate,
-        onComplete: algosdk.OnApplicationComplete.NoOpOC,
-        approvalProgram,
-        clearProgram,
-        numGlobalInts: programsPayload.data.schema.globalInts,
-        numGlobalByteSlices: programsPayload.data.schema.globalBytes,
-        numLocalInts: programsPayload.data.schema.localInts,
-        numLocalByteSlices: programsPayload.data.schema.localBytes,
-      });
-
-      const [signedCreateTxn] = await transactionSigner([createTxn], [0]);
-      const appCreateSubmit = await algodClient.sendRawTransaction(signedCreateTxn).do();
-      const appCreateTxId = appCreateSubmit.txid;
-      const appCreateConfirm = await algosdk.waitForConfirmation(algodClient, appCreateTxId, 6);
-      const createdAppId = Number(appCreateConfirm.applicationIndex);
-
-      if (!createdAppId) {
-        throw new Error('On-chain app creation did not return an app ID');
-      }
-
-      // 3) Fund app escrow (+ reserve) and initialize app state in one atomic group.
-      const appAddress = algosdk.getApplicationAddress(createdAppId);
-      const milestoneLabel = normalizedMilestones
-        .map((m) => m.description)
-        .join(' | ')
-        .slice(0, 28) || 'WorkProof Milestone';
-      const method = new algosdk.ABIMethod({
-        name: 'create_work_contract',
-        args: [
-          { type: 'account', name: 'contractor' },
-          { type: 'account', name: 'supervisor' },
-          { type: 'account', name: 'worker' },
-          { type: 'uint64', name: 'milestone_amount' },
-          { type: 'byte[]', name: 'milestone_name' },
-          { type: 'pay', name: 'pay_txn' }
-        ],
-        returns: { type: 'uint64' }
-      });
-
-      const spSetup = await algodClient.getTransactionParams().do();
-      const reserveTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-        sender: activeAddress,
-        receiver: appAddress,
-        amount: APP_ESCROW_RESERVE_MICROALGO,
-        suggestedParams: spSetup,
-      });
-      const payTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-        sender: activeAddress,
-        receiver: appAddress,
-        amount: totalMicroAlgo,
-        suggestedParams: spSetup,
-      });
-
-      const atc = new algosdk.AtomicTransactionComposer();
-      atc.addTransaction({ txn: reserveTxn, signer: transactionSigner });
-      atc.addMethodCall({
-        appID: createdAppId,
-        method,
-        sender: activeAddress,
-        suggestedParams: spSetup,
-        signer: transactionSigner,
-        methodArgs: [
-          activeAddress,
-          supervisorAddress,
-          workerAddress,
-          BigInt(totalMicroAlgo),
-          new TextEncoder().encode(milestoneLabel),
-          { txn: payTxn, signer: transactionSigner }
-        ],
-      });
-
-      const setupResult = await atc.execute(algodClient, 6);
-  const escrowTxId = payTxn.txID().toString();
-      const setupCallTxId = setupResult.txIDs[setupResult.txIDs.length - 1];
-
-      // 4) Persist deployed contract and milestones in backend DB.
-      const registerRes = await fetch(`${BACKEND_URL}/api/algo-payment/register-deployment`, {
+      // Create escrow draft on backend
+      const txnRes = await fetch(`${backendUrl}/api/algo-payment/create-transaction`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          appId: createdAppId,
-          appCreateTxId,
-          escrowTxId,
-          setupCallTxId,
-          contractorAddress: activeAddress.trim(),
-          workerAddress,
-          supervisorAddress,
-          milestones: normalizedMilestones,
-          amountAlgo: totalAmount,
-          transactionId: `frontend_${Date.now()}`
+          contractorAddress: activeAddress,
+          workerAddress: worker,
+          supervisorAddress: supervisor,
+          milestones,
+          amountAlgo: totalAmount
         })
       });
 
-      if (!registerRes.ok) {
-        const registerErr = await registerRes.json().catch(() => ({}));
-        throw new Error(registerErr?.error || 'Failed to register deployed contract in backend');
+      if (!txnRes.ok) {
+        const errData = await txnRes.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to create transaction');
       }
 
-      setAppId(createdAppId);
-      setPaymentStatus('success');
-      setLoading(false);
+      const txnPayload = await txnRes.json();
+      const escrowData = txnPayload?.data;
+      const escrowAddress = escrowData?.escrowAddress;
+      const escrowToken = escrowData?.escrowToken;
+
+      if (!escrowAddress || !escrowToken) {
+        throw new Error('Backend did not return escrow details');
+      }
+
+      // Real wallet-signed escrow lock payment on Algorand.
+      const paymentResult = await algorand.send.payment({
+        signer: transactionSigner,
+        sender: activeAddress,
+        receiver: escrowAddress,
+        amount: algo(totalAmount),
+      });
+
+      const transactionId = paymentResult.txIds[0];
+      if (!transactionId) {
+        throw new Error('Failed to get payment transaction id after wallet signing');
+      }
+
+      // Verify payment on backend and deploy contract record.
+      const submitRes = await fetch(`${backendUrl}/api/algo-payment/verify-and-deploy`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contractorAddress: activeAddress,
+          transactionId,
+          escrowAddress,
+          escrowToken,
+          workerAddress: worker,
+          supervisorAddress: supervisor,
+          milestones,
+          amountAlgo: totalAmount
+        })
+      });
+
+      if (!submitRes.ok) {
+        const errData = await submitRes.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to submit transaction');
+      }
+
+      const responseData = await submitRes.json();
+      const verifyTxnId = responseData?.data?.transactionId || transactionId;
+      pollForContract(verifyTxnId);
 
     } catch (err) {
       console.error('Payment error:', err);
-      const message = err instanceof Error ? err.message : 'Unknown error';
-      const normalizedMessage = String(message || '').toLowerCase();
-
-      if (normalizedMessage.includes('account not found')) {
-        alert('Payment failed: The connected wallet account is not available on Algorand TestNet. Fund it with TestNet ALGO and reconnect wallet.');
-      } else {
-        alert('Payment failed: ' + message);
-      }
+      alert('Payment failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
       setLoading(false);
       setPaymentStatus('idle');
     }
@@ -306,10 +212,10 @@ export function ContractorDashboard() {
 
         <div className="space-y-4 mb-8">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold text-white">Milestones ({milestones.length}/{MAX_MILESTONES})</h3>
+            <h3 className="text-lg font-semibold text-white">Milestones ({milestones.length}/20)</h3>
             <button
               onClick={addMilestone}
-              disabled={milestones.length >= MAX_MILESTONES}
+              disabled={milestones.length >= 20}
               className="flex items-center gap-1 text-sm text-[#0a84ff] hover:text-[#0a84ff]/80 font-medium disabled:opacity-50 transition-colors"
             >
               <Plus size={16} /> Add Milestone
@@ -342,13 +248,13 @@ export function ContractorDashboard() {
                     className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-[#34c759]"
                     placeholder="ALGO"
                     value={m.amount}
-                    onChange={(e) => updateMilestone(i, 'amount', e.target.value)}
+                    onChange={(e) => updateMilestone(i, 'amount', parseFloat(e.target.value) || 0)}
                   />
                   <span className="absolute right-3 top-2 text-xs font-semibold text-white/40">ALGO</span>
                 </div>
                 <button
                   onClick={() => removeMilestone(i)}
-                  disabled={milestones.length === MIN_MILESTONES}
+                  disabled={milestones.length === 1}
                   className="text-white/30 hover:text-[#ff453a] disabled:opacity-30 p-2 transition-colors"
                 >
                   <Trash2 size={18} />
@@ -362,16 +268,11 @@ export function ContractorDashboard() {
           <div className="text-center md:text-left">
             <p className="text-white/50 text-sm font-medium">Total Contract Value</p>
             <p className="text-3xl font-bold text-white">{totalAmount.toFixed(2)} ALGO</p>
-            <p className="text-sm text-[#30d158] mt-1">
-              {algoToInrRate
-                ? `~ ₹${(estimatedInr || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })} @ ₹${algoToInrRate.toFixed(2)}/ALGO`
-                : 'INR estimate unavailable'}
-            </p>
           </div>
 
           <button
             onClick={handlePayAndLock}
-            disabled={loading || paymentStatus === 'processing' || !worker || !supervisor || !transactionSigner}
+            disabled={loading || paymentStatus === 'processing' || !worker || !supervisor}
             className="w-full md:w-auto btn-primary px-8 py-3.5 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (

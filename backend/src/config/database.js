@@ -82,9 +82,12 @@ async function initDatabase() {
       CREATE TABLE IF NOT EXISTS contracts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         app_id INTEGER UNIQUE NOT NULL,
+        on_chain_app_id INTEGER,
         contractor_address TEXT NOT NULL,
         supervisor_address TEXT NOT NULL,
         worker_address TEXT NOT NULL,
+        escrow_address TEXT,
+        escrow_secret TEXT,
         milestone_count INTEGER NOT NULL,
         total_escrow INTEGER NOT NULL,
         total_escrow_inr REAL DEFAULT 0,
@@ -97,6 +100,9 @@ async function initDatabase() {
     `);
 
     // Migrate existing contracts table (add new columns if missing)
+    try { await dbAsync.run(`ALTER TABLE contracts ADD COLUMN on_chain_app_id INTEGER`); } catch(e) {}
+    try { await dbAsync.run(`ALTER TABLE contracts ADD COLUMN escrow_address TEXT`); } catch(e) {}
+    try { await dbAsync.run(`ALTER TABLE contracts ADD COLUMN escrow_secret TEXT`); } catch(e) {}
     try { await dbAsync.run(`ALTER TABLE contracts ADD COLUMN total_escrow_inr REAL DEFAULT 0`); } catch(e) {}
     try { await dbAsync.run(`ALTER TABLE contracts ADD COLUMN algo_to_inr_rate REAL DEFAULT 0`); } catch(e) {}
     try { await dbAsync.run(`ALTER TABLE contracts ADD COLUMN algo_txid TEXT`); } catch(e) {}

@@ -4,8 +4,8 @@ const { Contract } = require('../models/Contract');
 const { Milestone } = require('../models/Milestone');
 const { WorkerBankDetail } = require('../models/WorkerBankDetail');
 const algorandService = require('../services/algorandService');
-const { simulatePayout } = require('../services/razorpayService');
-const { isValidAlgorandAddress } = require('../utils/validators');
+const razorpayService = require('../services/razorpayService');
+const db = require('../config/database');
 
 /**
  * GET /api/contracts/:appId
@@ -36,7 +36,7 @@ router.get('/:appId', async (req, res) => {
     // Optionally get on-chain state (may be slow)
     let onChainState = null;
     try {
-      onChainState = await algorandService.getContractState(appIdNum);
+      onChainState = await algorandService.getContractState(contract.on_chain_app_id || appIdNum);
     } catch (error) {
       console.log('Could not fetch on-chain state:', error.message);
     }
@@ -45,6 +45,7 @@ router.get('/:appId', async (req, res) => {
       success: true,
       data: {
         appId: contract.appId || contract.app_id,
+        onChainAppId: contract.onChainAppId || contract.on_chain_app_id || appIdNum,
         contractor: contract.contractorAddress || contract.contractor_address,
         supervisor: contract.supervisorAddress || contract.supervisor_address,
         worker: contract.workerAddress || contract.worker_address,
@@ -124,20 +125,16 @@ router.get('/:appId/transactions', async (req, res) => {
 router.post('/:appId/approve-milestone', async (req, res) => {
   try {
     const { appId } = req.params;
-    const { supervisorAddress, milestoneIndex, onChainTxId, approvalProofTxId } = req.body;
+    const { supervisorAddress, milestoneIndex, approvalTxid } = req.body;
     
     const appIdNum = parseInt(appId, 10);
     
-    const milestoneIndexNum = Number(milestoneIndex);
-
-    if (isNaN(appIdNum) || !supervisorAddress || milestoneIndex === undefined || Number.isNaN(milestoneIndexNum)) {
+    if (isNaN(appIdNum) || !supervisorAddress || milestoneIndex === undefined || !approvalTxid) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: appId, supervisorAddress, milestoneIndex'
+        error: 'Missing required fields: appId, supervisorAddress, milestoneIndex, approvalTxid'
       });
     }
-
-    const normalizedSupervisor = String(supervisorAddress).trim().toUpperCase();
     
     // Get contract from database
     const contract = await Contract.findByAppId(appIdNum);
@@ -148,9 +145,16 @@ router.post('/:appId/approve-milestone', async (req, res) => {
         error: 'Contract not found'
       });
     }
+
+    if (contract.supervisor_address !== supervisorAddress) {
+      return res.status(403).json({
+        success: false,
+        error: 'Only the assigned supervisor wallet can approve milestones for this contract'
+      });
+    }
     
     // Get milestone
-    const milestone = await Milestone.findByContractAndIndex(contract.id, milestoneIndexNum);
+    const milestone = await Milestone.findByContractAndIndex(contract.id, milestoneIndex);
     
     if (!milestone) {
       return res.status(404).json({
@@ -166,101 +170,63 @@ router.post('/:appId/approve-milestone', async (req, res) => {
       });
     }
     
-    // If a real on-chain txid is provided, verify ownership and app ID.
-    let txid = onChainTxId || approvalProofTxId || `APPROVED_${appIdNum}_${milestoneIndexNum}_${Date.now()}`;
-    let assetId = Math.floor(Math.random() * 1000000) + 100000;
-
-    if (milestoneIndexNum === 0) {
-      if (!onChainTxId) {
-        return res.status(400).json({ success: false, error: 'Missing onChainTxId for milestone 0 approval' });
-      }
-
-      const verification = await algorandService.verifyAppCallTx({
-        txid: onChainTxId,
-        appId: appIdNum,
-        sender: normalizedSupervisor
-      });
-
-      if (!verification.ok) {
-        return res.status(400).json({ success: false, error: verification.reason || 'Invalid on-chain approval transaction' });
-      }
-
-      const innerTxns = verification.tx?.transaction?.['inner-txns'] || [];
-      const createdAssetInner = innerTxns.find(t => t['asset-config-transaction']);
-      if (createdAssetInner?.['asset-config-transaction']?.['asset-id']) {
-        assetId = createdAssetInner['asset-config-transaction']['asset-id'];
-      }
-    } else {
-      if (!approvalProofTxId) {
-        return res.status(400).json({ success: false, error: 'Missing approvalProofTxId for milestone approval' });
-      }
-
-      const proofLookup = await algorandService.getTransactionById(approvalProofTxId);
-      const proofTx = proofLookup?.transaction;
-      const proofPayment = proofTx?.['payment-transaction'];
-
-      if (!proofTx || !proofPayment) {
-        return res.status(400).json({ success: false, error: 'Approval proof transaction is invalid or not a payment transaction' });
-      }
-
-      if (String(proofTx.sender).toUpperCase() !== normalizedSupervisor || String(proofPayment.receiver).toUpperCase() !== normalizedSupervisor) {
-        return res.status(400).json({ success: false, error: 'Approval proof sender/receiver mismatch' });
-      }
-
-      const noteDecoded = proofTx.note ? Buffer.from(proofTx.note, 'base64').toString('utf8') : '';
-      const expectedNote = `workproof-approve:${appIdNum}:${milestoneIndexNum}`;
-      if (noteDecoded !== expectedNote) {
-        return res.status(400).json({ success: false, error: 'Approval proof note mismatch' });
-      }
-
-      txid = approvalProofTxId;
-      assetId = 0;
-    }
+    const approvalVerification = await algorandService.verifyApprovalMarkerTransaction({
+      txid: approvalTxid,
+      supervisorAddress,
+      appId: appIdNum,
+      milestoneIndex
+    });
     
     await Milestone.markPaid(milestone.id, {
-      txid: txid,
-      assetId: assetId,
+      txid: approvalVerification.txid,
+      assetId: null,
       paidAt: new Date().toISOString()
     });
-    
+
+    // Trigger INR payout record for this paid milestone
+    const bankDetails = await WorkerBankDetail.findByWorker(contract.worker_address);
+    const algoToInrRate = Number(contract.algo_to_inr_rate || 0);
+    const amountINR = Number(milestone.amount_inr || (Number(milestone.amount || 0) * algoToInrRate));
+    let payoutResult = null;
+
+    if (bankDetails?.upi_id || bankDetails?.fund_account_id) {
+      payoutResult = await razorpayService.processPayout({
+        amountINR,
+        workerAddress: contract.worker_address,
+        workerBankDetails: bankDetails,
+        milestoneDescription: milestone.description,
+        appId: appIdNum,
+        milestoneIndex,
+        algoAmount: Number(milestone.amount || 0),
+        algoToInrRate
+      });
+
+      await Milestone.markPayoutTriggered(milestone.id, {
+        razorpayPayoutId: payoutResult.payoutId || payoutResult.razorpayOrderId,
+        payoutSimulated: !!payoutResult.simulated
+      });
+    } else {
+      await db.run(
+        `UPDATE milestones
+         SET payout_status = 'pending', payout_simulated = 0
+         WHERE id = ?`,
+        [milestone.id]
+      );
+    }
+
     await Milestone.markCertificateGenerated(milestone.id);
-
-    // Simulate INR payout only after milestone release is approved.
-    const workerBank = await WorkerBankDetail.findByWorker(contract.worker_address);
-    const payout = await simulatePayout({
-      amountINR: milestone.amount_inr || (milestone.amount * (contract.algo_to_inr_rate || 0)),
-      workerAddress: contract.worker_address,
-      upiId: workerBank?.upi_id || null,
-      accountHolderName: workerBank?.account_holder_name || null,
-      milestoneDescription: milestone.description,
-      appId: appIdNum,
-      milestoneIndex: milestoneIndexNum,
-      algoAmount: milestone.amount,
-      algoToInrRate: contract.algo_to_inr_rate || 0
-    });
-
-    await Milestone.markPayoutTriggered(milestone.id, {
-      razorpayPayoutId: payout.payoutId,
-      payoutSimulated: true
-    });
     
-    console.log(`✅ Milestone ${milestoneIndexNum} approved for contract ${appIdNum}`);
-    console.log(`💰 Payment of ${milestone.amount} released to worker`);
+    console.log(`✅ Milestone ${milestoneIndex} approved for contract ${appIdNum}`);
+    console.log(`💰 Payment of ${milestone.amount} ALGO settled for worker ${contract.worker_address}`);
     
     res.json({
       success: true,
       message: 'Milestone approved successfully',
       data: {
         appId: appIdNum,
-        milestoneIndex: milestoneIndexNum,
-        txid: txid,
-        certificateAssetId: assetId,
-        payout: {
-          payoutId: payout.payoutId,
-          utrNumber: payout.utrNumber,
-          simulated: true,
-          amountINR: payout.amountINR
-        },
+        milestoneIndex: milestoneIndex,
+        txid: approvalVerification.txid,
+        payout: payoutResult,
         status: 'approved'
       }
     });
@@ -271,75 +237,6 @@ router.post('/:appId/approve-milestone', async (req, res) => {
       success: false,
       error: error.message
     });
-  }
-});
-
-/**
- * GET /api/contracts/history/:address
- * Wallet-scoped contract history for contractor/supervisor/worker roles
- */
-router.get('/history/:address', async (req, res) => {
-  try {
-    const { address } = req.params;
-
-    if (!isValidAlgorandAddress(address)) {
-      return res.status(400).json({ success: false, error: 'Invalid Algorand address format' });
-    }
-
-    const [asContractor, asSupervisor, asWorker] = await Promise.all([
-      Contract.findByContractor(address),
-      Contract.findBySupervisor(address),
-      Contract.findByWorker(address)
-    ]);
-
-    const contractMap = new Map();
-    const addWithRole = (rows, role) => {
-      for (const row of rows) {
-        const key = String(row.app_id);
-        if (!contractMap.has(key)) {
-          contractMap.set(key, { ...row, roles: new Set() });
-        }
-        contractMap.get(key).roles.add(role);
-      }
-    };
-
-    addWithRole(asContractor, 'contractor');
-    addWithRole(asSupervisor, 'supervisor');
-    addWithRole(asWorker, 'worker');
-
-    const items = [];
-    for (const row of contractMap.values()) {
-      const milestones = await Milestone.findByContract(row.id);
-      const paidCount = milestones.filter((m) => !!m.paid).length;
-      items.push({
-        appId: row.app_id,
-        contractId: row.id,
-        roles: Array.from(row.roles),
-        status: row.status,
-        deployedAt: row.deployed_at || row.created_at,
-        contractorAddress: row.contractor_address,
-        supervisorAddress: row.supervisor_address,
-        workerAddress: row.worker_address,
-        totalEscrow: row.total_escrow,
-        totalEscrowInr: row.total_escrow_inr || 0,
-        milestoneCount: milestones.length,
-        paidMilestones: paidCount,
-      });
-    }
-
-    items.sort((a, b) => new Date(b.deployedAt) - new Date(a.deployedAt));
-
-    return res.json({
-      success: true,
-      data: {
-        walletAddress: address,
-        totalContracts: items.length,
-        contracts: items,
-      }
-    });
-  } catch (error) {
-    console.error('Get wallet contract history error:', error);
-    return res.status(500).json({ success: false, error: error.message });
   }
 });
 

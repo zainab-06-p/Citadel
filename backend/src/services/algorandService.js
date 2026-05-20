@@ -1,102 +1,31 @@
 const { algodClient, indexerClient, algosdk } = require('../config/algorand');
-const fs = require('fs');
-const path = require('path');
 
-const WORKPROOF_APPROVAL_CANDIDATE_PATHS = [
-  path.join(__dirname, '../../contracts/artifacts/workproof/WorkProof.approval.teal'),
-  path.join(__dirname, '../../../projects/contracts/smart_contracts/artifacts/workproof/WorkProof.approval.teal')
-];
-
-const WORKPROOF_CLEAR_CANDIDATE_PATHS = [
-  path.join(__dirname, '../../contracts/artifacts/workproof/WorkProof.clear.teal'),
-  path.join(__dirname, '../../../projects/contracts/smart_contracts/artifacts/workproof/WorkProof.clear.teal')
-];
-
-let compiledWorkProofCache = null;
-
-function resolveExistingPath(candidatePaths, label) {
-  const foundPath = candidatePaths.find((candidatePath) => fs.existsSync(candidatePath));
-
-  if (!foundPath) {
-    throw new Error(`${label} not found. Checked: ${candidatePaths.join(', ')}`);
+function decodeBase64ToString(value) {
+  if (!value) return '';
+  try {
+    return Buffer.from(value, 'base64').toString('utf8');
+  } catch {
+    return '';
   }
-
-  return foundPath;
 }
 
-function readWorkProofPrograms() {
-  const approvalPath = resolveExistingPath(WORKPROOF_APPROVAL_CANDIDATE_PATHS, 'WorkProof approval program');
-  const clearPath = resolveExistingPath(WORKPROOF_CLEAR_CANDIDATE_PATHS, 'WorkProof clear program');
+async function lookupTransactionWithRetry(txid, maxAttempts = 10) {
+  let lastError;
 
-  return {
-    approvalTeal: fs.readFileSync(approvalPath, 'utf8'),
-    clearTeal: fs.readFileSync(clearPath, 'utf8')
-  };
-}
-
-function getWorkProofProgramVersion() {
-  const approvalPath = resolveExistingPath(WORKPROOF_APPROVAL_CANDIDATE_PATHS, 'WorkProof approval program');
-  const clearPath = resolveExistingPath(WORKPROOF_CLEAR_CANDIDATE_PATHS, 'WorkProof clear program');
-  const approvalStat = fs.statSync(approvalPath);
-  const clearStat = fs.statSync(clearPath);
-  return `${approvalStat.mtimeMs}:${clearStat.mtimeMs}`;
-}
-
-async function compileTeal(tealSource) {
-  const result = await algodClient.compile(tealSource).do();
-  return {
-    base64: result.result,
-    bytes: Buffer.from(result.result, 'base64')
-  };
-}
-
-async function getCompiledWorkProofPrograms(forceRefresh = false) {
-  const currentVersion = getWorkProofProgramVersion();
-
-  if (compiledWorkProofCache && !forceRefresh && compiledWorkProofCache.version === currentVersion) {
-    return compiledWorkProofCache;
-  }
-
-  const { approvalTeal, clearTeal } = readWorkProofPrograms();
-  const [approvalCompiled, clearCompiled] = await Promise.all([
-    compileTeal(approvalTeal),
-    compileTeal(clearTeal)
-  ]);
-
-  compiledWorkProofCache = {
-    version: currentVersion,
-    approvalBase64: approvalCompiled.base64,
-    clearBase64: clearCompiled.base64,
-    schema: {
-      globalInts: 5,
-      globalBytes: 4,
-      localInts: 0,
-      localBytes: 0
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const response = await indexerClient.lookupTransactionByID(txid).do();
+      if (response?.transaction) {
+        return response.transaction;
+      }
+    } catch (error) {
+      lastError = error;
     }
-  };
 
-  return compiledWorkProofCache;
-}
-
-async function getTransactionById(txid) {
-  return indexerClient.lookupTransactionByID(txid).do();
-}
-
-async function verifyAppCallTx({ txid, appId, sender }) {
-  const tx = await getTransactionById(txid);
-  const appCall = tx?.transaction?.['application-transaction'];
-  const appIdOnChain = appCall?.['application-id'];
-  const senderOnChain = tx?.transaction?.sender;
-
-  if (!appCall || appIdOnChain !== Number(appId)) {
-    return { ok: false, reason: 'Transaction is not an app call for this app ID' };
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
 
-  if (sender && senderOnChain !== sender) {
-    return { ok: false, reason: 'Transaction sender mismatch' };
-  }
-
-  return { ok: true, tx };
+  throw new Error(`Transaction ${txid} not indexed yet${lastError ? `: ${lastError.message}` : ''}`);
 }
 
 /**
@@ -236,12 +165,90 @@ async function getCurrentRound() {
   }
 }
 
+/**
+ * Verify a payment transaction on Algorand TestNet
+ */
+async function verifyPaymentTransaction({
+  txid,
+  expectedSender,
+  expectedReceiver,
+  expectedAmountMicroAlgos
+}) {
+  if (!txid) {
+    throw new Error('Missing transaction id');
+  }
+
+  const tx = await lookupTransactionWithRetry(txid);
+  const paymentTxn = tx['payment-transaction'];
+
+  if (!paymentTxn) {
+    throw new Error('Transaction is not a payment transaction');
+  }
+
+  if (expectedSender && tx.sender !== expectedSender) {
+    throw new Error('Payment sender does not match expected supervisor address');
+  }
+
+  if (expectedReceiver && paymentTxn.receiver !== expectedReceiver) {
+    throw new Error('Payment receiver does not match generated escrow address');
+  }
+
+  if (typeof expectedAmountMicroAlgos === 'number' && paymentTxn.amount < expectedAmountMicroAlgos) {
+    throw new Error('Payment amount is less than the contract escrow amount');
+  }
+
+  return {
+    txid: tx.id,
+    sender: tx.sender,
+    receiver: paymentTxn.receiver,
+    amountMicroAlgos: paymentTxn.amount,
+    confirmedRound: tx['confirmed-round']
+  };
+}
+
+/**
+ * Verify a supervisor approval marker transaction on-chain.
+ */
+async function verifyApprovalMarkerTransaction({
+  txid,
+  supervisorAddress,
+  appId,
+  milestoneIndex
+}) {
+  if (!txid) {
+    throw new Error('Missing approval transaction id');
+  }
+
+  const tx = await lookupTransactionWithRetry(txid);
+  const expectedNote = `APPROVE:${appId}:${milestoneIndex}`;
+  const note = decodeBase64ToString(tx.note);
+  const paymentTxn = tx['payment-transaction'];
+
+  if (!paymentTxn) {
+    throw new Error('Approval transaction must be a payment transaction');
+  }
+
+  if (tx.sender !== supervisorAddress) {
+    throw new Error('Approval transaction sender does not match supervisor wallet');
+  }
+
+  if (note !== expectedNote) {
+    throw new Error('Approval transaction note does not match contract/milestone');
+  }
+
+  return {
+    txid: tx.id,
+    confirmedRound: tx['confirmed-round'],
+    sender: tx.sender,
+    note
+  };
+}
+
 module.exports = {
   deployContract,
   getContractState,
   getAppTransactions,
   getCurrentRound,
-  getCompiledWorkProofPrograms,
-  getTransactionById,
-  verifyAppCallTx
+  verifyPaymentTransaction,
+  verifyApprovalMarkerTransaction
 };

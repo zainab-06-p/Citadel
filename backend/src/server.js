@@ -12,38 +12,28 @@ const workerRoutes = require('./routes/workers');
 const consentRoutes = require('./routes/consent');
 const bankRoutes = require('./routes/bank');
 const receiptsRoutes = require('./routes/receipts');
+// Round 3 — Citadel Extension Routes
+const creditOracleRoutes = require('./routes/creditOracle');
+const microLendRoutes    = require('./routes/microLend');
+const invoiceGuardRoutes = require('./routes/invoiceGuard');
 
 // Import middleware
 const { webhookAuth } = require('./middleware/webhookAuth');
 const { errorHandler } = require('./middleware/errorHandler');
-const database = require('./config/database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Vercel and similar platforms run behind a proxy and forward client IP headers.
-// Required for express-rate-limit to work without throwing validation errors.
-app.set('trust proxy', 1);
-
-const configuredOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '')
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-
-// Security middleware - allow CORS headers
-app.use(helmet({
-  crossOriginResourcePolicy: false
-}));
+// Security middleware
+app.use(helmet());
 
 // Log CORS configuration for debugging
-console.log('📡 CORS enabled for:', configuredOrigins.length ? configuredOrigins.join(', ') : '*');
+console.log('📡 CORS enabled for:', process.env.FRONTEND_URL || '*');
 
 app.use(cors({
-  origin: configuredOrigins.length ? configuredOrigins : '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-  optionsSuccessStatus: 200
+  origin: process.env.FRONTEND_URL || '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Rate limiting
@@ -103,21 +93,6 @@ app.use('/api/razorpay/webhook',
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Ensure DB schema exists before serving API routes.
-const dbInitPromise = database.initDatabase().catch((error) => {
-  console.error('Database initialization failed:', error);
-  throw error;
-});
-
-app.use(async (req, res, next) => {
-  try {
-    await dbInitPromise;
-    return next();
-  } catch (error) {
-    return next(error);
-  }
-});
-
 // Apply payment limiter to order creation
 app.use('/api/razorpay/create-order', paymentLimiter);
 app.use('/api/algo-payment/verify-and-deploy', paymentLimiter);
@@ -130,26 +105,10 @@ app.use('/api/workers', workerRoutes);
 app.use('/api/consent', consentRoutes);
 app.use('/api/bank', bankRoutes);
 app.use('/api/receipts', receiptsRoutes);
-
-// Backward-compatible certificate endpoint used by frontend worker dashboard.
-app.get('/api/certificates/:appId/:milestoneIndex', (req, res) => {
-  const { appId, milestoneIndex } = req.params;
-  const query = new URLSearchParams();
-
-  for (const [key, value] of Object.entries(req.query || {})) {
-    if (value !== undefined && value !== null) {
-      query.set(key, String(value));
-    }
-  }
-
-  if (!query.has('format')) {
-    query.set('format', 'pdf');
-  }
-
-  const queryString = query.toString();
-  const target = `/api/receipts/${appId}/milestone/${milestoneIndex}/certificate${queryString ? `?${queryString}` : ''}`;
-  return res.redirect(307, target);
-});
+// Round 3 — Citadel Extension Routes
+app.use('/api/credit-oracle', creditOracleRoutes);
+app.use('/api/micro-lend',    microLendRoutes);
+app.use('/api/invoice-guard', invoiceGuardRoutes);
 
 // 404 handler
 app.use((req, res) => {
@@ -164,17 +123,15 @@ app.use((req, res) => {
 // Global error handler
 app.use(errorHandler);
 
-// Start server (only if not running on Vercel serverless)
-if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+// Start server
+if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
-    const publicBaseUrl = process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`;
-
     console.log(`╔════════════════════════════════════════════════════════╗`);
     console.log(`║           WorkProof Backend Server                      ║`);
     console.log(`╠════════════════════════════════════════════════════════╣`);
     console.log(`║  Port: ${PORT.toString().padEnd(46)} ║`);
     console.log(`║  Environment: ${process.env.NODE_ENV || 'development'}${''.padEnd(36)} ║`);
-    console.log(`║  Health Check: ${`${publicBaseUrl}/health`.padEnd(38)} ║`);
+    console.log(`║  Health Check: http://localhost:${PORT}/health${''.padEnd(19)} ║`);
     console.log(`╚════════════════════════════════════════════════════════╝`);
     console.log();
     console.log('Waiting for requests...');

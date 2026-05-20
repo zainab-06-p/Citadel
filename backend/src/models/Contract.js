@@ -6,9 +6,12 @@ const Contract = {
    */
   async create({ 
     appId, 
+    onChainAppId = null,
     contractorAddress, 
     supervisorAddress, 
     workerAddress, 
+    escrowAddress = null,
+    escrowSecret = null,
     milestoneCount, 
     totalEscrow,
     totalEscrowInr = 0,
@@ -17,24 +20,39 @@ const Contract = {
     status = 'active' 
   }) {
     const result = await db.run(
-      `INSERT INTO contracts (app_id, contractor_address, supervisor_address, worker_address, 
-        milestone_count, total_escrow, total_escrow_inr, algo_to_inr_rate, algo_txid, status, deployed_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [appId, contractorAddress, supervisorAddress, workerAddress, 
-       milestoneCount, totalEscrow, totalEscrowInr, algoToInrRate, algoTxid, status, new Date().toISOString()]
+      `INSERT INTO contracts (
+        app_id, on_chain_app_id, contractor_address, supervisor_address, worker_address,
+        escrow_address, escrow_secret, milestone_count, total_escrow,
+        total_escrow_inr, algo_to_inr_rate, algo_txid, status, deployed_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        appId,
+        onChainAppId,
+        contractorAddress,
+        supervisorAddress,
+        workerAddress,
+        escrowAddress,
+        escrowSecret,
+        milestoneCount,
+        totalEscrow,
+        totalEscrowInr,
+        algoToInrRate,
+        algoTxid,
+        status,
+        new Date().toISOString()
+      ]
     );
     
     return {
       id: result.lastID,
       appId,
+      onChainAppId,
       contractorAddress,
       supervisorAddress,
       workerAddress,
+      escrowAddress,
       milestoneCount,
       totalEscrow,
-      totalEscrowInr,
-      algoToInrRate,
-      algoTxid,
       status
     };
   },
@@ -132,9 +150,11 @@ const Contract = {
     const contract = {
       id: rows[0].id,
       appId: rows[0].app_id,
+      onChainAppId: rows[0].on_chain_app_id,
       contractorAddress: rows[0].contractor_address,
       supervisorAddress: rows[0].supervisor_address,
       workerAddress: rows[0].worker_address,
+      escrowAddress: rows[0].escrow_address,
       milestoneCount: rows[0].milestone_count,
       totalEscrow: rows[0].total_escrow,
       status: rows[0].status,

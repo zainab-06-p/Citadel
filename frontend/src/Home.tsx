@@ -8,24 +8,27 @@ import { WorkerDashboard } from './components/WorkerDashboard'
 import { WorkerBankSetup } from './components/WorkerBankSetup'
 import { BankPortal } from './components/BankPortal'
 import { ConsentManager } from './components/ConsentManager'
-import { WalletHistory } from './components/WalletHistory'
+import { CreditProfileTab } from './components/CreditProfileTab'
+import { MicroLendTab } from './components/MicroLendTab'
+import { InvoiceGuardTab } from './components/InvoiceGuardTab'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { Briefcase, ClipboardCheck, UserCircle, Landmark, Shield, ArrowRight, Wallet, ChevronDown, Banknote, History } from 'lucide-react'
+import { Briefcase, ClipboardCheck, UserCircle, Landmark, Shield, ArrowRight, Wallet, ChevronDown, Banknote, TrendingUp, FileText } from 'lucide-react'
 import citadelLogo from './assets/citadel-logo.png'
 
-type ViewType = 'contractor' | 'supervisor' | 'worker' | 'bank' | 'consent' | 'history'
+type ViewType = 'contractor' | 'supervisor' | 'worker' | 'bank' | 'consent' | 'microlend' | 'invoice-guard'
 
 const sidebarTabs: { id: ViewType; label: string; icon: React.ElementType }[] = [
   { id: 'contractor', label: 'Contractor', icon: Briefcase },
   { id: 'supervisor', label: 'Supervisor', icon: ClipboardCheck },
   { id: 'worker', label: 'Worker', icon: UserCircle },
-  { id: 'history', label: 'History', icon: History },
   { id: 'bank', label: 'Institution', icon: Landmark },
   { id: 'consent', label: 'Compliance', icon: Shield },
+  { id: 'microlend', label: 'MicroLend', icon: TrendingUp },
+  { id: 'invoice-guard', label: 'InvoiceGuard', icon: FileText },
 ]
 
-type WorkerSubView = 'certificates' | 'payment-setup'
+type WorkerSubView = 'certificates' | 'payment-setup' | 'credit-profile'
 
 export default function Home() {
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)
@@ -63,12 +66,65 @@ export default function Home() {
   if (!hasEntered) {
     return (
       <div className="min-h-screen text-white flex flex-col relative overflow-hidden font-[Schibsted_Grotesk]">
-        {/* Full-screen dark cinematic video background */}
-        <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0">
-          <source src="https://res.cloudinary.com/dfonotyfb/video/upload/v1775585556/dds3_1_rqhg7x.mp4" type="video/mp4" />
-        </video>
+        {/* Animated aurora/cloud background — pure CSS, no external video */}
+        <div className="absolute inset-0 z-0" style={{ background: 'radial-gradient(ellipse at 50% 60%, #0a1628 0%, #000000 70%)' }}>
+          {/* Drifting orbs */}
+          <div style={{
+            position: 'absolute', width: '80vw', height: '80vw', maxWidth: 900, maxHeight: 900,
+            top: '-20%', left: '-15%', borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(30,80,200,0.35) 0%, transparent 70%)',
+            filter: 'blur(80px)',
+            animation: 'drift1 18s ease-in-out infinite alternate',
+          }} />
+          <div style={{
+            position: 'absolute', width: '60vw', height: '60vw', maxWidth: 700, maxHeight: 700,
+            top: '10%', right: '-10%', borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(80,30,180,0.3) 0%, transparent 70%)',
+            filter: 'blur(100px)',
+            animation: 'drift2 22s ease-in-out infinite alternate',
+          }} />
+          <div style={{
+            position: 'absolute', width: '50vw', height: '50vw', maxWidth: 600, maxHeight: 600,
+            bottom: '-10%', left: '30%', borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(0,140,120,0.2) 0%, transparent 70%)',
+            filter: 'blur(90px)',
+            animation: 'drift3 26s ease-in-out infinite alternate',
+          }} />
+          <div style={{
+            position: 'absolute', width: '40vw', height: '40vw', maxWidth: 500, maxHeight: 500,
+            top: '40%', left: '20%', borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(100,60,200,0.15) 0%, transparent 70%)',
+            filter: 'blur(60px)',
+            animation: 'drift2 30s ease-in-out infinite alternate-reverse',
+          }} />
+          {/* Noise grain overlay for depth */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.04\'/%3E%3C/svg%3E")',
+            opacity: 0.4,
+          }} />
+        </div>
 
-        {/* Dark overlay for cinematic feel + text readability */}
+        {/* CSS keyframes injected once */}
+        <style>{`
+          @keyframes drift1 {
+            0%   { transform: translate(0, 0) scale(1); }
+            50%  { transform: translate(8vw, 6vh) scale(1.08); }
+            100% { transform: translate(-4vw, 10vh) scale(0.96); }
+          }
+          @keyframes drift2 {
+            0%   { transform: translate(0, 0) scale(1); }
+            50%  { transform: translate(-6vw, -8vh) scale(1.1); }
+            100% { transform: translate(5vw, 4vh) scale(0.94); }
+          }
+          @keyframes drift3 {
+            0%   { transform: translate(0, 0) scale(1); }
+            50%  { transform: translate(4vw, -5vh) scale(1.05); }
+            100% { transform: translate(-7vw, 3vh) scale(1.02); }
+          }
+        `}</style>
+
+        {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-black/50 z-[1]" />
 
         {/* Navigation */}
@@ -252,7 +308,7 @@ export default function Home() {
                 {view === 'worker' && (
                   <div className="space-y-6">
                     {/* Worker Sub-tabs */}
-                    <div className="flex gap-2 bg-white/5 p-1 rounded-2xl border border-white/10 max-w-xs">
+                    <div className="flex gap-2 bg-white/5 p-1 rounded-2xl border border-white/10 max-w-sm">
                       <button
                         onClick={() => setWorkerSubView('certificates')}
                         className={`flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition-all ${
@@ -273,14 +329,26 @@ export default function Home() {
                       >
                         <Banknote size={14} /> Payment Setup
                       </button>
+                      <button
+                        onClick={() => setWorkerSubView('credit-profile')}
+                        className={`flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-1.5 ${
+                          workerSubView === 'credit-profile'
+                            ? 'bg-white text-black shadow-sm'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
+                        <TrendingUp size={14} /> Credit
+                      </button>
                     </div>
                     {workerSubView === 'certificates' && <WorkerDashboard />}
                     {workerSubView === 'payment-setup' && <WorkerBankSetup />}
+                    {workerSubView === 'credit-profile' && <CreditProfileTab />}
                   </div>
                 )}
-                {view === 'history' && <WalletHistory />}
                 {view === 'bank' && <BankPortal />}
                 {view === 'consent' && <ConsentManager />}
+                {view === 'microlend' && <MicroLendTab />}
+                {view === 'invoice-guard' && <InvoiceGuardTab />}
               </motion.div>
             </AnimatePresence>
           </div>

@@ -231,10 +231,14 @@ async function recordUPIPayout(contract, milestone, txid) {
     simulatedAt: new Date().toISOString(),
     status: 'completed'
   };
-  
+
   await db.run(
-    'UPDATE milestones SET metadata = ? WHERE id = ?',
-    [JSON.stringify({ upiPayout: upiData }), milestone.id]
+    `UPDATE milestones
+     SET payout_status = 'triggered',
+         payout_simulated = 1,
+         razorpay_payout_id = ?
+     WHERE id = ?`,
+    [upiData.upiReference, milestone.id]
   );
   
   console.log(`[Watcher] UPI payout simulated: ${upiData.upiReference}`);

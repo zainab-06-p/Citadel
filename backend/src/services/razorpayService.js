@@ -208,10 +208,80 @@ async function simulatePayout({
   }
 }
 
+/**
+ * Process milestone payout.
+ * Uses live RazorpayX payouts when configured, otherwise falls back to simulation.
+ */
+async function processPayout({
+  amountINR,
+  workerAddress,
+  workerBankDetails,
+  milestoneDescription,
+  appId,
+  milestoneIndex,
+  algoAmount = 0,
+  algoToInrRate = 0
+}) {
+  const liveEnabled = process.env.RAZORPAY_ENABLE_LIVE_PAYOUTS === 'true';
+  const accountNumber = process.env.RAZORPAYX_ACCOUNT_NUMBER;
+  const fundAccountId = workerBankDetails?.fund_account_id;
+
+  if (liveEnabled && accountNumber && fundAccountId) {
+    try {
+      const amountInPaise = Math.round(amountINR * 100);
+      const payout = await razorpay.payouts.create({
+        account_number: accountNumber,
+        fund_account_id: fundAccountId,
+        amount: amountInPaise,
+        currency: 'INR',
+        mode: workerBankDetails.payment_mode || 'UPI',
+        purpose: 'payout',
+        queue_if_low_balance: true,
+        reference_id: `wp_${appId}_${milestoneIndex}_${Date.now()}`,
+        narration: `WorkProof M${milestoneIndex + 1}`,
+        notes: {
+          worker_address: workerAddress,
+          app_id: String(appId),
+          milestone_index: String(milestoneIndex),
+          algo_amount: String(algoAmount),
+          algo_to_inr_rate: String(algoToInrRate),
+          description: milestoneDescription || ''
+        }
+      });
+
+      return {
+        simulated: false,
+        status: payout.status,
+        payoutId: payout.id,
+        amountINR,
+        amountInPaise,
+        processedAt: new Date().toISOString(),
+        mode: payout.mode,
+        referenceId: payout.reference_id
+      };
+    } catch (error) {
+      console.warn('Live payout failed, falling back to simulation:', error.message);
+    }
+  }
+
+  return simulatePayout({
+    amountINR,
+    workerAddress,
+    upiId: workerBankDetails?.upi_id,
+    accountHolderName: workerBankDetails?.account_holder_name,
+    milestoneDescription,
+    appId,
+    milestoneIndex,
+    algoAmount,
+    algoToInrRate
+  });
+}
+
 module.exports = {
   createOrder,
   verifyPayment,
   simulatePayout,
+  processPayout,
   generateUTR,
   generatePayoutId
 };

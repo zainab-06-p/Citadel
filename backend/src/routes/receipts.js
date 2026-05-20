@@ -232,9 +232,9 @@ router.get('/:appId/milestone/:index/certificate', async (req, res) => {
 router.get('/worker/:address/contracts', async (req, res) => {
   try {
     const { address } = req.params;
+    const db = require('../config/database');
 
     // Find all contracts where this address is the worker
-    const db = require('../config/database');
     const contracts = await db.all(
       `SELECT c.*, 
         (SELECT COUNT(*) FROM milestones m WHERE m.contract_id = c.id) AS milestone_count,
