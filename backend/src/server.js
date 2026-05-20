@@ -27,14 +27,39 @@ const PORT = process.env.PORT || 3000;
 // Security middleware
 app.use(helmet());
 
-// Log CORS configuration for debugging
-console.log('📡 CORS enabled for:', process.env.FRONTEND_URL || '*');
+// ─── CORS ─────────────────────────────────────────────────────────────────
+// Allowlist: deployed Vercel frontend + localhost dev variants.
+// Any origin in this list (or matching FRONTEND_URL env) is permitted.
+const ALLOWED_ORIGINS = [
+  'https://frontend-six-livid-85.vercel.app',   // production frontend
+  'https://frontend-8ueyjacri-zainabs-projects-7c3d81a5.vercel.app', // preview
+  'http://localhost:5173',                        // vite dev
+  'http://localhost:3000',                        // alternative dev
+  'http://localhost:4173',                        // vite preview
+  process.env.FRONTEND_URL,                       // from env (override)
+].filter(Boolean);
+
+console.log('📡 CORS enabled for:', ALLOWED_ORIGINS);
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: (origin, callback) => {
+    // Allow requests with no origin (Postman, curl, mobile apps, server-to-server)
+    if (!origin) return callback(null, true);
+    // Allow if in allowlist
+    if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+    // In development, allow all
+    if (process.env.NODE_ENV !== 'production') return callback(null, true);
+    // Block unknown origins in production
+    return callback(new Error(`CORS: origin ${origin} not allowed`), false);
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: false,  // no cookies/sessions needed
+  optionsSuccessStatus: 200, // IE11 compatibility
 }));
+
+// Handle preflight OPTIONS for all routes
+app.options('*', cors());
 
 // Rate limiting
 const limiter = rateLimit({
