@@ -1,0 +1,76 @@
+services:
+  - type: web
+    name: citadel-backend
+    env: node
+    plan: standard
+    region: oregon
+    
+    # Build configuration
+    buildCommand: npm install
+    startCommand: npm start
+    
+    # Environment variables
+    envVars:
+      # Server Configuration
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: FRONTEND_URL
+        value: https://ctiadel.vercel.app
+      - key: PUBLIC_BASE_URL
+        fromService:
+          type: web
+          name: citadel-backend
+          property: url
+      
+      # Supabase Database Configuration
+      # Add these from your Supabase project settings:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      
+      # Razorpay Payment Gateway (Testnet)
+      # Get from: https://dashboard.razorpay.com/app/keys
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
+      
+      # Algorand Blockchain (Testnet)
+      - key: ALGORAND_SERVER
+        value: https://testnet-api.algonode.cloud
+      - key: ALGORAND_PORT
+        value: 443
+      - key: ALGORAND_TOKEN
+        sync: false
+      - key: INDEXER_SERVER
+        value: https://testnet-idx.algonode.cloud
+      - key: INDEXER_PORT
+        value: 443
+      
+      # Redis Cache (Optional)
+      - key: REDIS_HOST
+        value: localhost
+      - key: REDIS_PORT
+        value: 6379
+      - key: REDIS_DB
+        value: 0
+    
+    # Health check
+    healthCheckPath: /health
+    
+    # Disk configuration
+    disk:
+      name: citadel-data
+      mountPath: /var/data
+      sizeGB: 10
+    
+    # Timeout for builds and deployments
+    buildTimeoutSeconds: 1200
+    deployTimeoutSeconds: 1200
