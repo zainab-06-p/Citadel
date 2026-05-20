@@ -26,7 +26,7 @@ Citadel converts **verified work** into **trusted financial reputation**. It is 
 ## Live Deployment
 
 - **Frontend (Vercel)**: https://frontend-six-livid-85.vercel.app ✅ **LIVE & PRODUCTION**
-- **Backend API**: https://backend-rouge-iota.vercel.app (Configured in frontend for API routing)
+- **Backend API**: https://citadel-backend-y2ek.onrender.com (Configured in frontend for API routing)
 - **Smart Contracts**: Deployed on Algorand TestNet (App IDs: 761438103, 761438104, 761438105, 761438115)
 
 ## Why Citadel
