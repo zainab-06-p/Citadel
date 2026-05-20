@@ -1,22 +1,24 @@
 // ─── Backend URL Resolution ────────────────────────────────────────────────
 //
-// Production deployment topology:
-//   Frontend  → https://frontend-six-livid-85.vercel.app
-//   Backend   → https://backend-rouge-iota.vercel.app
+// Uses RUNTIME hostname detection — 100% reliable regardless of how
+// Vercel handles VITE_* environment variables at build time.
 //
-// In DEVELOPMENT: use VITE_BACKEND_URL from .env (defaults to localhost:3000)
-// In PRODUCTION:  always use the real deployed backend — never localhost
+// Production backend: https://backend-rouge-iota.vercel.app
 // ───────────────────────────────────────────────────────────────────────────
 
 const PROD_BACKEND = 'https://backend-rouge-iota.vercel.app';
 
-const configuredBackendUrl = String(import.meta.env.VITE_BACKEND_URL || '').trim();
-const normalizedConfiguredBackendUrl = configuredBackendUrl.replace(/\/$/, '');
+// Detect at RUNTIME whether we are running on localhost or a deployed domain.
+// This cannot be fooled by env vars baked into the bundle at build time.
+const isRunningOnLocalhost: boolean =
+  typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === '');
 
-const isLocalUrl = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(normalizedConfiguredBackendUrl);
+// Dev fallback from .env — only used when actually on localhost
+const devBackend = String(import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000').replace(/\/$/, '');
 
-// In production: always use the hardcoded prod backend (strips any localhost value baked in at build time).
-// In development: use configured URL or fall back to localhost:3000.
-export const BACKEND_URL = import.meta.env.PROD
-  ? PROD_BACKEND
-  : (normalizedConfiguredBackendUrl && !isLocalUrl ? normalizedConfiguredBackendUrl : 'http://localhost:3000');
+// ALWAYS use the real backend when deployed; only use local backend on localhost.
+export const BACKEND_URL: string = isRunningOnLocalhost ? devBackend : PROD_BACKEND;
+
