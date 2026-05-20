@@ -55,8 +55,8 @@ India's gig workers — delivery partners, construction labour, freelancers — 
 
 | Service | URL |
 |---|---|
-| **Frontend** (Vercel) | `https://citadel-workproof.vercel.app` *(replace with actual URL)* |
-| **Backend API** (Render) | `https://citadel-backend.onrender.com` *(replace with actual URL)* |
+| **Frontend** (Vercel) | `https://frontend-six-livid-85.vercel.app/` |
+| **Backend API** (Render) | `https://citadel-backend-y2ek.onrender.com`  |
 | **Algorand Testnet** | [AlgoExplorer](https://testnet.explorer.perawallet.app/) |
 
 ### Deployed Smart Contracts (Algorand Testnet)
