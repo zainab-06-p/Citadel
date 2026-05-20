@@ -101,6 +101,10 @@ India's gig economy employs over **7.7 million workers** but faces critical trus
 git clone https://github.com/zainab-06-p/Citadel.git
 cd Citadel
 
+# 2. Access deployed application
+# Frontend: https://frontend-six-livid-85.vercel.app ✅ LIVE
+# Backend: https://backend-rouge-iota.vercel.app
+
 # 2. Setup Backend
 cd backend
 cp .env.example .env

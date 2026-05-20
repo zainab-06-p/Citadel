@@ -3,7 +3,8 @@
 **Status:** Production Ready  
 **Last Updated:** May 20, 2026  
 **Repository:** https://github.com/zainab-06-p/Citadel.git  
-**Frontend Live:** https://frontend-six-livid-85.vercel.app  
+**Frontend Live:** https://frontend-six-livid-85.vercel.app ✅ **PRODUCTION**
+**Backend API:** https://backend-rouge-iota.vercel.app  
 **Version:** v1.2.0
 
 ---
@@ -425,6 +426,7 @@ chore:  Maintenance
 
 **Document Generated:** May 20, 2026  
 **Project Status:** ✅ Production Ready  
-**Frontend URL:** https://frontend-six-livid-85.vercel.app  
+**Frontend URL:** https://frontend-six-livid-85.vercel.app ✅ **LIVE**  
+**Backend URL:** https://backend-rouge-iota.vercel.app  
 **GitHub:** https://github.com/zainab-06-p/Citadel.git  
 **Version:** 1.2.0

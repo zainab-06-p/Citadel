@@ -3,13 +3,18 @@
 **Date:** May 20, 2026  
 **Status:** ✅ Production Ready
 
+**🚀 DEPLOYMENT URLS:**
+- **Frontend:** https://frontend-six-livid-85.vercel.app ✅ **LIVE**
+- **Backend API:** https://backend-rouge-iota.vercel.app
+- **GitHub:** https://github.com/zainab-06-p/Citadel.git
+
 ---
 
 ## 📦 Recent Updates
 
 ### Documentation
 - ✅ Created comprehensive README with complete project overview
-- ✅ Documented all three smart contracts (WorkProof, CreditOracle, MicroLend, InvoiceGuard)
+- ✅ Documented all four smart contracts (WorkProof, CreditOracle, MicroLend, InvoiceGuard)
 - ✅ Added detailed setup guide for backend, frontend, and contracts
 - ✅ Included architecture diagrams and data flow documentation
 - ✅ Added API documentation and deployment instructions
