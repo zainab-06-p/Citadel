@@ -3,20 +3,22 @@ const path = require('path');
 const fs = require('fs');
 
 // ─── DB path: runtime-aware ────────────────────────────────────────────────────
-//  Render  → /var/data  (persistent disk mounted from render.yaml)
-//  Vercel  → /tmp       (ephemeral — only for cold-start table creation)
-//  Local   → backend/database/
+//  Vercel  → /tmp           (ephemeral but tables created per cold-start)
+//  Render  → database/      (long-running process; data persists all session)
+//  Local   → database/
 const isVercelRuntime = Boolean(process.env.VERCEL);
-const isRenderRuntime = Boolean(process.env.RENDER); // Render sets this automatically
 
-const DB_DIR = isRenderRuntime
-  ? '/var/data'                                       // ✔ persistent disk
-  : isVercelRuntime
-    ? '/tmp'                                          // ephemeral (migrate to Render)
-    : path.join(__dirname, '../../database');         // local dev
+const DB_DIR = isVercelRuntime
+  ? '/tmp'
+  : path.join(__dirname, '../../database');  // Render + local: writable app dir
 
 const DB_PATH = path.join(DB_DIR, 'workproof.db');
-console.log(`🗄️  DB path: ${DB_PATH} (${isRenderRuntime ? 'Render' : isVercelRuntime ? 'Vercel/tmp' : 'local'})`);
+console.log(`🗄️  DB: ${DB_PATH} (${process.env.RENDER ? 'Render' : isVercelRuntime ? 'Vercel' : 'local'})`);
+
+// Ensure DB directory exists
+if (!fs.existsSync(DB_DIR)) {
+  fs.mkdirSync(DB_DIR, { recursive: true });
+}
 
 
 // Create database connection

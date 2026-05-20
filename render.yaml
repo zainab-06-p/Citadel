@@ -53,9 +53,3 @@ services:
 
     # Health check
     healthCheckPath: /health
-
-    # Persistent disk — SQLite DB stored here permanently
-    disk:
-      name: citadel-data
-      mountPath: /var/data
-      sizeGB: 1
