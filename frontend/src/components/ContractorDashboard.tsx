@@ -4,6 +4,7 @@ import { Briefcase, CreditCard, Plus, Trash2, CheckCircle, ExternalLink } from '
 import { useWallet } from '@txnlab/use-wallet-react';
 import { algo, AlgorandClient } from '@algorandfoundation/algokit-utils';
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs';
+import { BACKEND_URL } from '../utils/getBackendUrl';
 
 type MilestoneInput = { description: string; amount: number };
 
@@ -40,7 +41,7 @@ export function ContractorDashboard() {
   const pollForContract = async (txnId: string) => {
     setLoading(true);
     setPaymentStatus('processing');
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+    const backendUrl = BACKEND_URL;
 
     let attempts = 0;
     const interval = setInterval(async () => {
@@ -91,7 +92,7 @@ export function ContractorDashboard() {
     setLoading(true);
     setPaymentStatus('processing');
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+      const backendUrl = BACKEND_URL;
       
       if (!transactionSigner) {
         throw new Error('Wallet signer unavailable. Reconnect your wallet and try again.');

@@ -5,6 +5,7 @@ import { useWallet } from '@txnlab/use-wallet-react';
 import algosdk from 'algosdk';
 import { AlgorandClient } from '@algorandfoundation/algokit-utils';
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs';
+import { BACKEND_URL } from '../utils/getBackendUrl';
 
 export function SupervisorApprove() {
   const { activeAddress, transactionSigner } = useWallet();
@@ -21,7 +22,7 @@ export function SupervisorApprove() {
     setResult(null);
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+      const backendUrl = BACKEND_URL;
       const note = new TextEncoder().encode(`APPROVE:${appId}:${milestoneIndex}`);
       const sp = await algorand.client.algod.getTransactionParams().do();
       const approvalTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({

@@ -3,7 +3,7 @@ import { useState, useCallback } from 'react'
 import { FileText, Lock, Search, ExternalLink, CheckCircle } from 'lucide-react'
 import algosdk from 'algosdk'
 
-const BACKEND   = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'
+import { BACKEND_URL as BACKEND } from '../utils/getBackendUrl'
 const ALGOD_URL = import.meta.env.VITE_ALGOD_SERVER || 'https://testnet-api.algonode.cloud'
 const algodClient = new algosdk.Algodv2('', ALGOD_URL, '')
 
