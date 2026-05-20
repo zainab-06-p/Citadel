@@ -242,9 +242,19 @@ async function initDatabase() {
   }
 }
 
+// ─── Auto-initialize tables on every cold start ──────────────────────────
+// On Vercel serverless /tmp is ephemeral — tables must be created each cold
+// start. Calling initDatabase() here (at module load) guarantees tables exist
+// before any route handler runs.
+const _dbReadyPromise = initDatabase()
+  .then(() => { console.log('DB auto-init: tables ready'); })
+  .catch(err => { console.error('DB auto-init FAILED:', err.message); });
+
 // Export both db (for direct access) and dbAsync (for promises)
 module.exports = {
   db,
   ...dbAsync,
-  initDatabase
+  initDatabase,
+  /** Await this before performing DB operations in request handlers */
+  ready: () => _dbReadyPromise,
 };

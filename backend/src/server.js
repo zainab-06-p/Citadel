@@ -4,6 +4,9 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
+// Trigger DB auto-init at module load (creates tables in /tmp on Vercel cold start)
+const { ready: dbReady } = require('./config/database');
+
 // Import routes
 const razorpayRoutes = require('./routes/razorpay');
 const algoPaymentRoutes = require('./routes/algoPayment');
@@ -60,6 +63,20 @@ app.use(cors({
 
 // Handle preflight OPTIONS for all routes
 app.options('*', cors());
+
+// ─── DB Readiness Middleware ────────────────────────────────────────────────
+// On Vercel serverless, /tmp is empty on cold start. This middleware ensures
+// initDatabase() has completed and all tables exist before any route handler
+// accesses the DB. On warm starts, dbReady() resolves instantly (already done).
+app.use(async (req, res, next) => {
+  try {
+    await dbReady();
+    next();
+  } catch (err) {
+    console.error('DB not ready:', err.message);
+    res.status(503).json({ success: false, error: 'Database not ready, please retry' });
+  }
+});
 
 // Rate limiting
 const limiter = rateLimit({
